@@ -6,9 +6,9 @@ import edu.rit.csh.pings.entities.VerificationRequest;
 import edu.rit.csh.pings.managers.VerificationRequestManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.PostConstruct;
@@ -18,7 +18,8 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.IOError;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.util.Date;
 import java.util.Properties;
 
@@ -45,6 +46,19 @@ public final class EmailService extends Authenticator implements ExternalService
     private String pingTemplate;
     private String verificationTemplate;
 
+    private static String readFully(InputStream in) throws IOException {
+        ByteBuffer buf = ByteBuffer.allocate(1024 * 1024);
+        byte[] block = new byte[1024];
+        int read;
+        while ((read = in.read(block)) == block.length) {
+            buf.put(block);
+        }
+        if (read != -1) {
+            buf.put(block, 0, read);
+        }
+        return new String(buf.array(), 0, buf.position());
+    }
+
     @PostConstruct
     private void setup() {
         this.mailProps = new Properties();
@@ -53,8 +67,8 @@ public final class EmailService extends Authenticator implements ExternalService
         this.mailProps.put("mail.smtp.auth", "true");
         this.mailProps.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         try {
-            this.pingTemplate = new String(Files.readAllBytes(ResourceUtils.getFile("classpath:ping_template.html").toPath()));
-            this.verificationTemplate = new String(Files.readAllBytes(ResourceUtils.getFile("classpath:verification_template.html").toPath()));
+            this.pingTemplate = readFully(new ClassPathResource("ping_template.html").getInputStream());
+            this.verificationTemplate = readFully(new ClassPathResource("verification_template.html").getInputStream());
         } catch (IOException e) {
             throw new IOError(e);
         }
