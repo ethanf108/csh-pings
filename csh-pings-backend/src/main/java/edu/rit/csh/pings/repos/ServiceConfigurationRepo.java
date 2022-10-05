@@ -13,5 +13,4 @@ public interface ServiceConfigurationRepo extends CrudRepository<ServiceConfigur
     <T extends ServiceConfiguration> T findByUuid(UUID uuid);
 
     <T extends ServiceConfiguration> List<T> findAllByUsernameIgnoreCase(String username);
-
 }

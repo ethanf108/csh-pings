@@ -3,6 +3,7 @@ package edu.rit.csh.pings.entities;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -20,8 +21,15 @@ public class Route {
     @Column(nullable = false)
     private long id;
 
-    @Column(nullable = false, unique = true, columnDefinition = "UUID")
+    @Type(type = "org.hibernate.type.UUIDCharType")
+    @Column(nullable = false, unique = true)
     private UUID uuid;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
+    private String description;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "application")
@@ -32,10 +40,4 @@ public class Route {
 
     @OneToMany(mappedBy = "route", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<WebNotification> webNotifications;
-
-    @Column(nullable = false, unique = true)
-    private String name;
-
-    @Column(nullable = false)
-    private String description;
 }

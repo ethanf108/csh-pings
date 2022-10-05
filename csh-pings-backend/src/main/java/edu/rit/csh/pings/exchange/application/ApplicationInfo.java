@@ -16,5 +16,6 @@ public class ApplicationInfo {
     private UUID uuid;
     private String name;
     private String description;
+    private String webURL;
     private boolean published;
 }

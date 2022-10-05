@@ -2,13 +2,11 @@ package edu.rit.csh.pings.controllers;
 
 import edu.rit.csh.pings.auth.CSHUser;
 import edu.rit.csh.pings.entities.ServiceConfiguration;
-import edu.rit.csh.pings.exchange.serviceconfiguration.ServiceConfigurationCreate;
-import edu.rit.csh.pings.exchange.serviceconfiguration.ServiceConfigurationInfo;
-import edu.rit.csh.pings.exchange.serviceconfiguration.ServiceConfigurationProperty;
-import edu.rit.csh.pings.exchange.serviceconfiguration.ServiceInfo;
+import edu.rit.csh.pings.exchange.serviceconfiguration.*;
 import edu.rit.csh.pings.external.ExternalDispatchService;
 import edu.rit.csh.pings.managers.ServiceConfigurationManager;
 import edu.rit.csh.pings.servicereflect.ConfigurableProperty;
+import edu.rit.csh.pings.servicereflect.ServiceDescription;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,37 +30,39 @@ public class ServiceConfigurationController {
     private final ServiceConfigurationManager serviceConfigurationManager;
     private final ExternalDispatchService externalDispatchService;
 
+    private ServiceInfo fromService(Class<? extends ServiceConfiguration> service) {
+        final ServiceInfo ret = new ServiceInfo();
+        final ServiceDescription desc = service.getAnnotation(ServiceDescription.class);
+        ret.setName(desc.name());
+        ret.setDescription(desc.description());
+        return ret;
+    }
+
     @GetMapping("/api/service/")
     private List<ServiceInfo> getServices() {
         this.log.info("GET /api/service");
-        return this.serviceConfigurationManager.getServices().stream().map(n -> n.getAnnotation(ConfigurableProperty.class)).map(service -> {
-            final ServiceInfo ret = new ServiceInfo();
-            ret.setName(service.name());
-            ret.setDescription(service.description());
-            return ret;
-        }).toList();
+        return this.serviceConfigurationManager.getServices().stream().map(this::fromService).toList();
     }
 
     @GetMapping("/api/service/{name}/")
     private ServiceInfo getService(@PathVariable String name) {
         this.log.info("GET /api/service/{name}");
-        final ServiceInfo ret = new ServiceInfo();
-        final ConfigurableProperty service = this.serviceConfigurationManager.getServiceByName(name).getAnnotation(ConfigurableProperty.class);
-        ret.setName(service.name());
-        ret.setDescription(service.description());
-        return ret;
+        return this.fromService(this.serviceConfigurationManager.getServiceByName(name).orElseThrow());
     }
 
     @GetMapping("/api/service/{name}/properties")
     private List<ServiceConfigurationProperty> getServiceProperties(@PathVariable String name) {
         this.log.info("GET /api/service/{name}/properties");
-        final Class<? extends ServiceConfiguration> service = this.serviceConfigurationManager.getServiceByName(name);
+        final Class<? extends ServiceConfiguration> service = this.serviceConfigurationManager.getServiceByName(name).orElseThrow();
         List<ServiceConfigurationProperty> props = new ArrayList<>();
         for (Field property : service.getDeclaredFields()) {
             if (property.isAnnotationPresent(ConfigurableProperty.class)) {
+                final ConfigurableProperty cprop = property.getAnnotation(ConfigurableProperty.class);
                 ServiceConfigurationProperty prop = new ServiceConfigurationProperty();
-                prop.setName(property.getAnnotation(ConfigurableProperty.class).name());
-                prop.setDescription(property.getAnnotation(ConfigurableProperty.class).description());
+                prop.setName(cprop.name());
+                prop.setDescription(cprop.description());
+                prop.setType(cprop.type().getHtmlInputType());
+                prop.setEnumValues(Arrays.asList(cprop.enumValues()));
                 props.add(prop);
             }
         }
@@ -72,7 +72,7 @@ public class ServiceConfigurationController {
     @PostMapping("/api/service-configuration/")
     private void createServiceConfiguration(@AuthenticationPrincipal CSHUser user, @RequestBody ServiceConfigurationCreate create) {
         this.log.info("POST /api/service-configuration");
-        final Class<? extends ServiceConfiguration> service = this.serviceConfigurationManager.getServiceByName(create.getName());
+        final Class<? extends ServiceConfiguration> service = this.serviceConfigurationManager.getServiceByName(create.getName()).orElseThrow();
         this.serviceConfigurationManager.checkDuplicateConfigurations(user.getUsername(), service);
         ServiceConfiguration config;
         try {
@@ -90,6 +90,7 @@ public class ServiceConfigurationController {
         config.setVerificationRequests(new HashSet<>());
         config.setUsername(user.getUsername());
         config.create(create.getProperties());
+        config.setDescription(create.getDescription());
         this.serviceConfigurationManager.save(config);
         this.log.debug("Created new Service Configuration. Type: " + create.getName() + ", UUID: " + config.getUuid());
         this.externalDispatchService.getExternalService(config).sendVerification(config);
@@ -107,19 +108,20 @@ public class ServiceConfigurationController {
         this.log.debug("Deleted Service Configuration " + uuid);
     }
 
-    @GetMapping("/api/service-configuration/{uuid}")
-    private ServiceConfigurationInfo getServiceConfiguration(@AuthenticationPrincipal CSHUser user, @PathVariable UUID uuid) {
-        this.log.info("GET /api/service-configuration/{uuid}");
-        final ServiceConfiguration config = this.serviceConfigurationManager.findByUUID(uuid).orElseThrow();
+    public ServiceConfigurationInfo fromServiceConfiguration(ServiceConfiguration config) {
         ServiceConfigurationInfo ret = new ServiceConfigurationInfo();
         BeanUtils.copyProperties(config, ret);
-        Map<String, String> props = new HashMap<>();
+        ret.setService(this.fromService(config.getClass()));
+        List<ConfigurablePropertyInfo> props = new ArrayList<>();
         for (Field field : config.getClass().getDeclaredFields()) {
             if (!field.isAnnotationPresent(ConfigurableProperty.class)) {
                 continue;
             }
             try {
-                props.put(field.getAnnotation(ConfigurableProperty.class).name(), field.get(config).toString());
+                field.setAccessible(true);
+                final ConfigurableProperty cprop = field.getAnnotation(ConfigurableProperty.class);
+                ConfigurablePropertyInfo cpi = new ConfigurablePropertyInfo(cprop.name(), cprop.description(), field.get(config).toString(), cprop.type());
+                props.add(cpi);
             } catch (IllegalAccessException e) {
                 this.log.error("Exception while accessing props field in service configuration", e);
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Invalid Service Configuration class file. Please fix code", e);
@@ -129,14 +131,19 @@ public class ServiceConfigurationController {
         return ret;
     }
 
+    @GetMapping("/api/service-configuration/{uuid}")
+    private ServiceConfigurationInfo getServiceConfiguration(@AuthenticationPrincipal CSHUser user, @PathVariable UUID uuid) {
+        this.log.info("GET /api/service-configuration/{uuid}");
+        final ServiceConfiguration config = this.serviceConfigurationManager
+                .findByUUID(uuid)
+                .filter(n -> n.getUsername().equalsIgnoreCase(user.getUsername()))
+                .orElseThrow();
+        return this.fromServiceConfiguration(config);
+    }
+
     @GetMapping("/api/service-configuration/")
     public List<ServiceConfigurationInfo> getServiceConfigurations(@AuthenticationPrincipal CSHUser user) {
         this.log.info("GET /api/service-configuration");
-        return this.serviceConfigurationManager.getByUsername(user.getUsername()).stream().map(config -> {
-            ServiceConfigurationInfo ret = new ServiceConfigurationInfo();
-            BeanUtils.copyProperties(config, ret);
-            ret.setProperties(null);
-            return ret;
-        }).toList();
+        return this.serviceConfigurationManager.getByUsername(user.getUsername()).stream().map(this::fromServiceConfiguration).toList();
     }
 }

@@ -1,17 +1,19 @@
 package edu.rit.csh.pings.exchange.serviceconfiguration;
 
+import edu.rit.csh.pings.servicereflect.ConfigurableProperty;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Map;
-
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
-public class ServiceConfigurationCreate {
+public class ConfigurablePropertyInfo {
 
     private String name;
     private String description;
-    private Map<String, String> properties;
+    private String value;
+    private ConfigurableProperty.Type type;
 }

@@ -15,6 +15,7 @@ public class WebNotificationInfo {
     private UUID uuid;
     private String body;
     private UUID applicationUUID;
+    private UUID routeUUID;
     private LocalDateTime date;
     private boolean unread;
 }

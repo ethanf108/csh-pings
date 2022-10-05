@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -13,4 +15,7 @@ public class ServiceConfigurationProperty {
 
     private String name;
     private String description;
+    private String type;
+    private List<String> enumValues;
+
 }

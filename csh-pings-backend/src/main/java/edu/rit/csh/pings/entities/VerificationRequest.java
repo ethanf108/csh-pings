@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "pings_verification_request")
@@ -24,4 +25,8 @@ public class VerificationRequest {
 
     @Column(nullable = false, unique = true, columnDefinition = "char(255)")
     private String token;
+
+    @Column(nullable = false)
+//    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime expire;
 }

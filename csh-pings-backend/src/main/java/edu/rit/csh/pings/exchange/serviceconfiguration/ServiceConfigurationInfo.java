@@ -4,14 +4,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Map;
+import java.util.List;
+import java.util.UUID;
 
 @NoArgsConstructor
 @Getter
 @Setter
 public class ServiceConfigurationInfo {
 
-    private String name;
+    private UUID uuid;
+    private String description;
+    private ServiceInfo service;
     private boolean verified;
-    private Map<String, String> properties;
+    private List<ConfigurablePropertyInfo> properties;
 }

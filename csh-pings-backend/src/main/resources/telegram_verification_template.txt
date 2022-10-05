@@ -1,0 +1,3 @@
+Hi! Please %%%LINK%%% to verify this Telegram account belongs to %%%USER%%%.
+
+If you believe this request was sent in error, or do not recognize this request, please ignore this message and contact an RTP.

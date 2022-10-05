@@ -10,6 +10,8 @@ import edu.rit.csh.pings.managers.ApplicationManager;
 import edu.rit.csh.pings.managers.ExternalTokenManager;
 import edu.rit.csh.pings.util.Util;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +27,11 @@ public class ExternalTokenController {
     private final ApplicationManager applicationManager;
     private final ExternalTokenManager externalTokenManager;
 
+    private final Log log = LogFactory.getLog("pings.external_token_controller");
+
     @GetMapping("/api/application/{uuid}/token")
     public List<ExternalTokenInfo> getTokens(@AuthenticationPrincipal CSHUser user, @PathVariable UUID uuid) {
+        this.log.info("GET /api/application/" + uuid + "/token");
         final Application app = this.applicationManager.findByUUID(uuid).orElseThrow();
         if (!app.isMaintainer(user)) {
             throw new UserAccessException("Must be maintainer");
@@ -40,6 +45,7 @@ public class ExternalTokenController {
 
     @PostMapping("/api/application/{uuid}/token")
     public void addToken(@AuthenticationPrincipal CSHUser user, @PathVariable UUID uuid, @RequestBody ExternalTokenCreate create) {
+        this.log.info("POST /api/application/" + uuid + "/token");
         final Application app = this.applicationManager.findByUUID(uuid).orElseThrow();
         if (!app.isMaintainer(user)) {
             throw new UserAccessException("Must be maintainer");
@@ -50,16 +56,19 @@ public class ExternalTokenController {
         token.setToken(Util.generateNoise());
         token.setApplication(app);
         this.applicationManager.save(app);
+        this.log.info("Added token to app " + app.getUuid());
     }
 
     @DeleteMapping("/api/token/{token}")
-    private void deleteToken(@AuthenticationPrincipal CSHUser user, @PathVariable String tok) {
-        final ExternalToken token = this.externalTokenManager.findByToken(tok).orElseThrow();
-        final Application app = token.getApplication();
+    private void deleteToken(@AuthenticationPrincipal CSHUser user, @PathVariable String token) {
+        this.log.info("DELETE /api/token/" + token);
+        final ExternalToken tok = this.externalTokenManager.findByToken(token).orElseThrow();
+        final Application app = tok.getApplication();
         if (!app.isMaintainer(user)) {
             throw new UserAccessException("Must be maintainer");
         }
-        app.getExternalTokens().remove(token);
+        app.getExternalTokens().remove(tok);
         this.applicationManager.save(app);
+        this.log.info("Deleted token for app" + app.getUuid());
     }
 }

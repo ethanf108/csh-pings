@@ -2,6 +2,7 @@ package edu.rit.csh.pings.external;
 
 import edu.rit.csh.pings.entities.EmailServiceConfiguration;
 import edu.rit.csh.pings.entities.ServiceConfiguration;
+import edu.rit.csh.pings.entities.TelegramServiceConfiguration;
 import edu.rit.csh.pings.entities.WebNotificationConfiguration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,13 +19,16 @@ public class ExternalDispatchService {
 
     private final EmailService emailService;
     private final WebNotificationService webNotificationService;
+    private final TelegramService telegramService;
 
     @SuppressWarnings("unchecked") //lmao
     public <T extends ServiceConfiguration> ExternalService<T> getExternalService(T config) {
-        if (config instanceof EmailServiceConfiguration emailConfig) {
+        if (config instanceof EmailServiceConfiguration) {
             return (ExternalService<T>) this.emailService;
         } else if (config instanceof WebNotificationConfiguration) {
             return (ExternalService<T>) this.webNotificationService;
+        } else if (config instanceof TelegramServiceConfiguration) {
+            return (ExternalService<T>) this.telegramService;
         } else {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Invalid Service Configuration");
         }

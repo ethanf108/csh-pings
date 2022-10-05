@@ -11,6 +11,7 @@ import java.util.UUID;
 @Setter
 public class UserRegistrationInfo {
 
+    private UUID uuid;
     private UUID route;
     private UUID serviceConfiguration;
 }

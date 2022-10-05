@@ -3,8 +3,10 @@ package edu.rit.csh.pings.entities;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 /**
  * This class basically represents a Many-to-Many relationship between {@link edu.rit.csh.pings.entities.Route} and {@link edu.rit.csh.pings.entities.ServiceConfiguration}, with an extra username column.
@@ -12,7 +14,7 @@ import javax.persistence.*;
  * TODO: consider removing this class and replacing it with Bi-directional Many-to-Many's
  */
 @Entity
-@Table(name = "pings_registration")
+@Table(name = "pings_user_registration")
 @NoArgsConstructor
 @Getter
 @Setter
@@ -22,6 +24,10 @@ public class UserRegistration {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private long id;
+
+    @Type(type = "org.hibernate.type.UUIDCharType")
+    @Column(nullable = false, unique = true)
+    private UUID uuid;
 
     @Column(nullable = false)
     private String username;

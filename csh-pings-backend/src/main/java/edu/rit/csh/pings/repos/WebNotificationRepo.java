@@ -11,4 +11,6 @@ import java.util.List;
 public interface WebNotificationRepo extends CrudRepository<WebNotification, Long> {
 
     List<WebNotification> findAllByUsernameOrderByDate(String username, Pageable p);
+
+    List<WebNotification> findAllByUsernameAndUnread(String username, boolean unread);
 }

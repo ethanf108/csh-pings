@@ -3,6 +3,7 @@ package edu.rit.csh.pings.entities;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -20,7 +21,8 @@ public class WebNotification {
     @Column(nullable = false)
     private long id;
 
-    @Column(nullable = false, unique = true, columnDefinition = "UUID")
+    @Type(type = "org.hibernate.type.UUIDCharType")
+    @Column(nullable = false, unique = true)
     private UUID uuid;
 
     @Column(nullable = false)

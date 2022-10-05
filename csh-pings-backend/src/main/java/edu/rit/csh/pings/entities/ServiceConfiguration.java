@@ -1,15 +1,17 @@
 package edu.rit.csh.pings.entities;
 
+import edu.rit.csh.pings.servicereflect.ConfigurableProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Entity
 @Table(name = "pings_service_configuration")
 @NoArgsConstructor
@@ -22,8 +24,12 @@ public abstract class ServiceConfiguration {
     @Column(nullable = false, unique = true)
     private long id;
 
-    @Column(nullable = false, unique = true, columnDefinition = "UUID")
+    @Type(type = "org.hibernate.type.UUIDCharType")
+    @Column(nullable = false, unique = true)
     private UUID uuid;
+
+    @Column(nullable = false)
+    private String description;
 
     @Column(nullable = false)
     private String username;
@@ -38,4 +44,8 @@ public abstract class ServiceConfiguration {
     private Set<UserRegistration> userRegistrations;
 
     public abstract void create(Map<String, String> properties);
+
+    public ConfigurableProperty getInfo() {
+        return this.getClass().getAnnotation(ConfigurableProperty.class);
+    }
 }

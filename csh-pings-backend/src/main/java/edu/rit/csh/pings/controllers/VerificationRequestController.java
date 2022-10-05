@@ -1,6 +1,7 @@
 package edu.rit.csh.pings.controllers;
 
 
+import edu.rit.csh.pings.auth.CSHUser;
 import edu.rit.csh.pings.entities.ServiceConfiguration;
 import edu.rit.csh.pings.entities.VerificationRequest;
 import edu.rit.csh.pings.managers.ServiceConfigurationManager;
@@ -8,6 +9,7 @@ import edu.rit.csh.pings.managers.VerificationRequestManager;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,7 +32,7 @@ public class VerificationRequestController {
      * @param token the token to verify
      */
     @PostMapping("/api/verify/")
-    private void verify(@RequestParam String token) {
+    private void verify(@AuthenticationPrincipal CSHUser user, @RequestParam String token) {
         this.log.info("POST /api/verify");
         final VerificationRequest vr = this.verificationRequestManager.findByToken(token).orElseThrow();
         ServiceConfiguration config = vr.getServiceConfiguration();
@@ -39,5 +41,6 @@ public class VerificationRequestController {
         config.getVerificationRequests().clear();
         config.setVerified(true);
         this.serviceConfigurationManager.save(config);
+        this.log.info("Verified Service Configuration " + config.getUuid() + " for User " + user.getUsername());
     }
 }

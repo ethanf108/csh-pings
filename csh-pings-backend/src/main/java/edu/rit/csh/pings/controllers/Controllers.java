@@ -8,6 +8,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -26,7 +27,7 @@ public class Controllers {
 
     @ExceptionHandler(IllegalArgumentException.class)
     private ResponseEntity<ErrorInfo> illegalArgumentException(IllegalArgumentException e) {
-        this.log.info("Illegal Argument Exception", e);
+        this.log.debug("Illegal Argument Exception", e);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorInfo(e.getMessage()));
     }
 
@@ -46,6 +47,12 @@ public class Controllers {
     private ResponseEntity<ErrorInfo> methodNotSupported(HttpRequestMethodNotSupportedException e) {
         this.log.debug("Wrong method for endpoint", e);
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(new ErrorInfo("Method not Allowed"));
+    }
+
+    @ExceptionHandler(MissingRequestHeaderException.class)
+    private ResponseEntity<ErrorInfo> missingRequestHeader(MissingRequestHeaderException e) {
+        this.log.debug("Missing Request Header: " + e.getHeaderName());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorInfo("Missing Header: " + e.getHeaderName()));
     }
 
     @ExceptionHandler(Exception.class)

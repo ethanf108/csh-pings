@@ -1,25 +1,24 @@
 package edu.rit.csh.pings.entities;
 
 import edu.rit.csh.pings.servicereflect.ConfigurableProperty;
+import edu.rit.csh.pings.servicereflect.ServiceDescription;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.util.Map;
 
 @Entity
-@Table(name = "pings_email_service_configuration")
 @NoArgsConstructor
 @Getter
 @Setter
-@ConfigurableProperty(name = "email", description = "Email Service")
-public final class EmailServiceConfiguration extends ServiceConfiguration implements ServiceConfigurationMarker {
+@ServiceDescription(name = "email", description = "Email Service")
+public final class EmailServiceConfiguration extends ServiceConfiguration implements ServiceMarker {
 
-    @Column(nullable = false)
-    @ConfigurableProperty(name = "email", description = "Email Address")
+    @Column
+    @ConfigurableProperty(name = "email", description = "Email Address", type = ConfigurableProperty.Type.EMAIL)
     private String toEmail;
 
     @Override

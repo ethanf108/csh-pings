@@ -3,10 +3,10 @@ package edu.rit.csh.pings.managers;
 import edu.rit.csh.pings.entities.Application;
 import edu.rit.csh.pings.repos.ApplicationRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -20,7 +20,7 @@ public class ApplicationManager {
         this.applicationRepo.save(a);
     }
 
-    public List<Application> get(int page, int size) {
+    public Page<Application> get(int page, int size) {
         return this.applicationRepo.findAllByOrderByName(PageRequest.of(page, size));
     }
 
@@ -28,12 +28,7 @@ public class ApplicationManager {
         return Optional.ofNullable(this.applicationRepo.findByUuid(uuid));
     }
 
-    public boolean deleteByUuid(UUID uuid) {
-        Optional<Application> op = this.findByUUID(uuid);
-        if (op.isEmpty()) {
-            return false;
-        }
-        this.applicationRepo.delete(op.get());
-        return true;
+    public void delete(Application app) {
+        this.applicationRepo.delete(app);
     }
 }

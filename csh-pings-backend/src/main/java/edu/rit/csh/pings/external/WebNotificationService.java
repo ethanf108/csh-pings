@@ -7,6 +7,9 @@ import edu.rit.csh.pings.managers.WebNotificationManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class WebNotificationService implements ExternalService<WebNotificationConfiguration> {
@@ -20,6 +23,8 @@ public class WebNotificationService implements ExternalService<WebNotificationCo
         wn.setBody(body);
         wn.setUnread(true);
         wn.setRoute(route);
+        wn.setDate(LocalDateTime.now());
+        wn.setUuid(UUID.randomUUID());
         this.webNotificationManager.save(wn);
     }
 

@@ -14,5 +14,6 @@ public class ApplicationCreate implements Serializable {
 
     private String name;
     private String description;
+    private String webURL;
     private List<String> maintainers;
 }

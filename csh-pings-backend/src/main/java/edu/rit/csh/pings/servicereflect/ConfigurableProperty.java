@@ -1,5 +1,8 @@
 package edu.rit.csh.pings.servicereflect;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -8,28 +11,50 @@ import java.lang.annotation.Target;
 /**
  * Metadata for both the ServiceConfiguration classes and properties in them.
  */
-@Target({ElementType.FIELD, ElementType.TYPE})
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ConfigurableProperty {
 
     /**
-     * Name of the Service, or name of the Property. Required.
+     * Name of the Property. Required.
      *
      * @return identifiable name, /[a-zA-Z0-9_-]/
      */
     String name();
 
     /**
-     * Long description of the Service, or the Property.
+     * Long description of the Property.
      *
      * @return description text
      */
     String description() default "";
 
     /**
-     * Used on Configurations.
+     * Type of data to represent
      *
-     * @return true if multiple configurations per user are allowed
+     * @return {@code Type}
      */
-    boolean allowMultiple() default true;
+    Type type();
+
+    /**
+     * Only used if {@code type()} is {@code ENUM}
+     *
+     * @return possible values
+     */
+    String[] enumValues() default {};
+
+    @Getter
+    @AllArgsConstructor
+    enum Type {
+        TEXT("text"),
+        MULTILINE_TEXT("textarea"),
+        EMAIL("email"),
+        URL("url"),
+        TEL("tel"),
+        ENUM("select"),
+        NUMBER("number"),
+        BOOL("checkbox");
+
+        private final String htmlInputType;
+    }
 }

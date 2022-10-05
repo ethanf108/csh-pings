@@ -18,10 +18,10 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.IOError;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
 import java.util.Date;
 import java.util.Properties;
+
+import static edu.rit.csh.pings.util.Util.readFully;
 
 @Service
 @RequiredArgsConstructor
@@ -45,19 +45,6 @@ public final class EmailService extends Authenticator implements ExternalService
 
     private String pingTemplate;
     private String verificationTemplate;
-
-    private static String readFully(InputStream in) throws IOException {
-        ByteBuffer buf = ByteBuffer.allocate(1024 * 1024);
-        byte[] block = new byte[1024];
-        int read;
-        while ((read = in.read(block)) == block.length) {
-            buf.put(block);
-        }
-        if (read != -1) {
-            buf.put(block, 0, read);
-        }
-        return new String(buf.array(), 0, buf.position());
-    }
 
     @PostConstruct
     private void setup() {

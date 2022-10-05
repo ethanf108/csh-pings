@@ -21,4 +21,11 @@ public class WebNotificationManager {
     public List<WebNotification> findMostRecent(String username, int page, int size) {
         return this.webNotificationRepo.findAllByUsernameOrderByDate(username, PageRequest.of(page, size));
     }
+
+    public void setRead(String username) {
+        for (WebNotification wn : this.webNotificationRepo.findAllByUsernameAndUnread(username, true)) {
+            wn.setUnread(false);
+            this.webNotificationRepo.save(wn);
+        }
+    }
 }

@@ -4,6 +4,7 @@ import edu.rit.csh.pings.auth.CSHUser;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -21,7 +22,8 @@ public class Application {
     @Column(nullable = false)
     private long id;
 
-    @Column(nullable = false, unique = true, columnDefinition = "UUID")
+    @Type(type = "org.hibernate.type.UUIDCharType")
+    @Column(nullable = false, unique = true)
     private UUID uuid;
 
     @Column(nullable = false, unique = true)
@@ -29,6 +31,12 @@ public class Application {
 
     @Column(nullable = false)
     private String description;
+
+    /**
+     * Nullable. Link to CSH Service
+     */
+    @Column
+    private String webURL;
 
     @Column(nullable = false)
     private boolean published;
@@ -43,6 +51,10 @@ public class Application {
     private Set<Route> routes;
 
     public boolean isMaintainer(CSHUser u) {
-        return u.isRTP() || this.maintainers.stream().anyMatch(n -> n.getUsername().equalsIgnoreCase(u.getUsername()));
+        return u.isRTP() || this.maintainers.stream().map(Maintainer::getUsername).anyMatch(u.getUsername()::equalsIgnoreCase);
+    }
+
+    public boolean isMaintainer(String username) {
+        return this.maintainers.stream().map(Maintainer::getUsername).anyMatch(username::equalsIgnoreCase);
     }
 }
