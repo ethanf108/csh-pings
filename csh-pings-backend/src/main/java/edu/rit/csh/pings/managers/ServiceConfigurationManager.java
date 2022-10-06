@@ -2,6 +2,7 @@ package edu.rit.csh.pings.managers;
 
 import edu.rit.csh.pings.entities.ServiceConfiguration;
 import edu.rit.csh.pings.entities.ServiceMarker;
+import edu.rit.csh.pings.entities.UserRegistration;
 import edu.rit.csh.pings.entities.WebNotificationConfiguration;
 import edu.rit.csh.pings.repos.ServiceConfigurationRepo;
 import edu.rit.csh.pings.servicereflect.ServiceDescription;
@@ -15,6 +16,7 @@ import java.util.*;
 public class ServiceConfigurationManager {
 
     private final ServiceConfigurationRepo serviceConfigurationRepo;
+    //    private final UserRegistrationManager userRegistrationManager;
     private final Map<String, Class<? extends ServiceConfiguration>> serviceCache = new HashMap<>();
 
     private void populateServiceConfigurationCache() {
@@ -76,6 +78,11 @@ public class ServiceConfigurationManager {
     }
 
     public void delete(ServiceConfiguration config) {
+        for (UserRegistration ur : config.getUserRegistrations()) {
+            ur.setServiceConfiguration(null);
+            ur.setRoute(null);
+        }
+        config.getUserRegistrations().clear();
         this.serviceConfigurationRepo.delete(config);
     }
 
