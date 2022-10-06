@@ -1,11 +1,11 @@
 import { OidcConfiguration } from "@axa-fr/react-oidc/dist/vanilla/oidc";
 
 const configuration: OidcConfiguration = {
-  client_id: process.env.SSO_CLIENT_ID || "",
+  client_id: "brickwall",
   redirect_uri: `${window.location.protocol}//${window.location.hostname}${window.location.port ? `:${window.location.port}` : ''
     }/authentication/callback`,
   scope: 'openid profile email offline_access',
-  authority: process.env.SSO_AUTHORITY || "",
+  authority: "https://sso.csh.rit.edu/auth/realms/csh",
   silent_redirect_uri: `${window.location.protocol}//${window.location.hostname
     }${window.location.port ? `:${window.location.port}` : ''
     }/authentication/silent_callback`,
