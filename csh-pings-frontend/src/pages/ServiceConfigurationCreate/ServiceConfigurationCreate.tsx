@@ -125,12 +125,29 @@ const ServiceConfigurationCreate: React.FC = () => {
                         <Card key={index} className="my-3">
                             <CardHeader>{prop.description}</CardHeader>
                             <CardBody className="pt-0">
-                                <Input
-                                    id={`sc-c-${formData.service}-prop-${prop.name}`}
-                                    type={prop.type}
-                                    onChange={e => setProperty(prop.name, e.target.value)}
-                                    placeholder={prop.description}>
-                                </Input>
+                                {
+                                    prop.type === "select" ?
+                                        <Input
+                                            id={`sc-c-${formData.service}-prop-${prop.name}`}
+                                            type={prop.type}
+                                            onChange={e => setProperty(prop.name, e.target.value)}
+                                            placeholder={prop.description}
+                                        >
+                                            <option value="" hidden>Select option ...</option>
+                                            {
+                                                prop.enumValues.map((option, index) =>
+                                                    <option key={index} value={option}>{option}</option>
+                                                )
+                                            }
+                                        </Input>
+                                        :
+                                        <Input
+                                            id={`sc-c-${formData.service}-prop-${prop.name}`}
+                                            type={prop.type}
+                                            onChange={e => setProperty(prop.name, e.target.value)}
+                                            placeholder={prop.description}
+                                        />
+                                }
                             </CardBody>
                         </Card>
                     )
