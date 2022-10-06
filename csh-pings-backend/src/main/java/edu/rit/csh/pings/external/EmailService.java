@@ -85,6 +85,30 @@ public final class EmailService extends Authenticator implements ExternalService
         }
     }
 
+    void sendSMSEmail(String email, String from, String route, String body) {
+        if (email.contains(" ") || email.contains(",")) {
+            throw new IllegalArgumentException("Invalid email");
+        }
+        try {
+            Session session = Session.getInstance(this.mailProps, this);
+            MimeMessage msg = new MimeMessage(session);
+            msg.addHeader("Content-Type", "text/plain; charset=UTF-8");
+            msg.addHeader("format", "flowed");
+            msg.addHeader("Content-Transfer-Encoding", "8bit");
+            msg.setFrom(new InternetAddress("pings@csh.rit.edu", from));
+            msg.setReplyTo(InternetAddress.parse("Pings", false));
+            msg.setSubject(from + " - " + route, "UTF-8");
+            msg.setContent(body, "text/plain");
+            msg.setSentDate(new Date());
+            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email, false));
+            Transport.send(msg);
+        } catch (AddressException e) {
+            throw new IllegalArgumentException("Invalid emailw", e);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Email failed", e);
+        }
+    }
+
     @Override
     public void sendPing(Route route, EmailServiceConfiguration config, String body) {
         final String bodyHTML = this.pingTemplate
