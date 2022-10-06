@@ -34,7 +34,10 @@ public class UserRegistrationController {
     @PostMapping("/api/user-registration")
     private void createUserRegistration(@AuthenticationPrincipal CSHUser user, @RequestBody UserRegistrationCreate create) {
         this.log.info("POST /api/user-registration");
-        final Route route = this.routeManager.findByUUID(create.getRoute()).filter(n -> n.getApplication().isPublished()).orElseThrow();
+        final Route route = this.routeManager
+                .findByUUID(create.getRoute())
+                .filter(n -> n.getApplication().isPublished() || n.getApplication().isMaintainer(user))
+                .orElseThrow();
         final ServiceConfiguration config = this.serviceConfigurationManager
                 .findByUUID(create.getServiceConfiguration())
                 .filter(n -> n.getUsername().equalsIgnoreCase(user.getUsername()))
@@ -55,10 +58,10 @@ public class UserRegistrationController {
 
     @GetMapping("/api/route/{uuid}/user-registration")
     private List<UserRegistrationInfo> getUserRegistrationsForRoute(@AuthenticationPrincipal CSHUser user, @PathVariable UUID uuid) {
-        this.log.info("GET /api/route/{uuid}/user-registration");
+        this.log.info("GET /api/route/" + uuid + "/user-registration");
         final Route route = this.routeManager
                 .findByUUID(uuid)
-                .filter(n -> n.getApplication().isPublished())
+                .filter(n -> n.getApplication().isPublished() || n.getApplication().isMaintainer(user))
                 .orElseThrow();
         this.userRegistrationManager.ensureWebNotificationConfigurationAsDefault(user.getUsername(), route);
         return this.userRegistrationManager.findAllByRouteAndUsername(route, user.getUsername()).stream().map(ur -> {

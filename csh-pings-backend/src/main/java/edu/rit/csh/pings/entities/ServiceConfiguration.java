@@ -1,6 +1,6 @@
 package edu.rit.csh.pings.entities;
 
-import edu.rit.csh.pings.servicereflect.ConfigurableProperty;
+import edu.rit.csh.pings.servicereflect.ServiceDescription;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -45,7 +45,7 @@ public abstract class ServiceConfiguration {
 
     public abstract void create(Map<String, String> properties);
 
-    public ConfigurableProperty getInfo() {
-        return this.getClass().getAnnotation(ConfigurableProperty.class);
+    public ServiceDescription getInfo() {
+        return this.getClass().getAnnotation(ServiceDescription.class);
     }
 }
