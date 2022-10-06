@@ -1,4 +1,4 @@
-export const baseURL: string = "http://localhost:8090";
+export const baseURL: string = `${window.location.protocol}//${window.location.hostname}${window.location.port ? `:${window.location.port}` : ''}`;
 
 export const getJSON = <T>(url: string, params?: any): Promise<T> => {
     if (!url.startsWith("/")) {
