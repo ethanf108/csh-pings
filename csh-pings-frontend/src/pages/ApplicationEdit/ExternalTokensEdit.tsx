@@ -1,6 +1,7 @@
 import { faPlus, faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { Card, CardBody, CardHeader, Container, Input } from "reactstrap";
 import { apiDelete, getJSON, post } from "../../API/API";
 import { ApplicationInfo, ExternalTokenInfo } from "../../API/Types"
@@ -19,14 +20,20 @@ const ExternalTokensEdit: React.FC<ExternalTokenProps> = props => {
 
     const loadTokens = () => {
         getJSON<ExternalTokenInfo[]>(`/api/application/${application.uuid}/token`)
-            .then(setExternalTokens);
+            .then(setExternalTokens)
+            .catch(e => toast.error("Unable to fetch Tokens " + e, {
+                theme: "colored"
+            }));
     }
 
     useEffect(loadTokens, [application]);
 
     const deleteToken = (token: string) => {
         apiDelete(`/api/token/${token}`)
-            .then(loadTokens);
+            .then(loadTokens)
+            .catch(e => toast.error("Unable to delete Token " + e, {
+                theme: "colored"
+            }));
     }
 
     const [newNote, setNewNote] = useState("");
@@ -36,7 +43,13 @@ const ExternalTokensEdit: React.FC<ExternalTokenProps> = props => {
             note: newNote
         })
             .then(loadTokens)
-            .then(() => setNewNote(""));
+            .then(() => setNewNote(""))
+            .then(() => toast.success("Created token!", {
+                theme: "colored"
+            }))
+            .catch(e => toast.error("Unable to create Token " + e, {
+                theme: "colored"
+            }));
     }
 
     return (

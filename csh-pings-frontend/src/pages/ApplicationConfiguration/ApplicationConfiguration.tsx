@@ -2,6 +2,7 @@ import { faPlus, faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import { Badge, Button, Card, CardBody, CardHeader, Container, Input } from "reactstrap";
 import { apiDelete, getJSON, post } from "../../API/API";
 import { ApplicationInfo, RouteInfo, ServiceConfigurationInfo, UserRegistrationInfo } from "../../API/Types";
@@ -14,7 +15,10 @@ const ApplicationConfiguration: React.FC = () => {
 
     useEffect(() => {
         getJSON<ServiceConfigurationInfo[]>("/api/service-configuration/")
-            .then(e=>setServiceConfigurations(e.filter(sc=>sc.verified)));
+            .then(e => setServiceConfigurations(e.filter(sc => sc.verified)))
+            .catch(e => toast.error("Unable to fetch Service Configurations " + e, {
+                theme: "colored"
+            }));
     }, []);
 
     const getServiceConfiguration = (ureg: UserRegistrationInfo): ServiceConfigurationInfo | null => {
@@ -80,7 +84,12 @@ const ApplicationConfiguration: React.FC = () => {
 
     const deleteRegistration = (ur: UserRegistrationInfo) => {
         apiDelete(`/api/user-registration/${ur.uuid}`)
-            .catch(console.error)
+            .then(() => toast.success("Deleted Registration!", {
+                theme: "colored"
+            }))
+            .catch(e => toast.error("Unable to delete Registration " + e, {
+                theme: "colored"
+            }))
             .finally(updateRoutesAndRegistrations)
     };
 
@@ -98,7 +107,13 @@ const ApplicationConfiguration: React.FC = () => {
                 let n = { ...newSelect };
                 delete n[route.uuid];
                 setNewSelect(n)
+                toast.success("Configured Application!", {
+                    theme: "colored"
+                })
             })
+            .catch(e => toast.error("Error while configuring application " + e, {
+                theme: "colored"
+            }))
             .finally(updateRoutesAndRegistrations)
     }
 

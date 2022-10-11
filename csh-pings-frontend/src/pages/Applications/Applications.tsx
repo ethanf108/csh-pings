@@ -2,6 +2,7 @@ import { faArrowUpRightFromSquare, faGear, faPlus } from '@fortawesome/free-soli
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { Badge, Button, Card, CardBody, CardHeader, Col, Container, Row } from "reactstrap";
 import { getJSON } from '../../API/API';
 import { ApplicationInfo, Paged } from '../../API/Types';
@@ -34,7 +35,12 @@ const Applications: React.FC = () => {
             page: pagination.page,
             length: pagination.limit,
             hidden: userSettings.superuserMode
-        }).then(setApplications)
+        })
+        .then(setApplications)
+        .catch(e=>toast.error("Unable to fetch Applications " + e, {
+            theme: "colored"
+
+        }))
     }, [pagination, userSettings.superuserMode]);
 
     return (
@@ -54,7 +60,9 @@ const Applications: React.FC = () => {
             </Container>
             <Row>
                 {
-                    applications.elements.map((app, index) =>
+                    applications.elements
+                    .filter(a=>a.published||userSettings.superuserMode)
+                    .map((app, index) =>
                         <Col key={index} className="my-3">
                             <Card className="bg-secondary">
                                 <CardHeader>

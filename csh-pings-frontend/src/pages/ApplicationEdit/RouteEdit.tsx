@@ -2,6 +2,7 @@ import { faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect } from "react";
 import { useState } from "react";
+import { toast } from "react-toastify";
 import { Button, Card, CardBody, CardHeader, Container, Input } from "reactstrap";
 import { apiDelete, getJSON, post } from "../../API/API";
 import { ApplicationInfo, RouteInfo } from "../../API/Types";
@@ -20,13 +21,19 @@ const RouteEdit: React.FC<RouteEditProps> = props => {
 
     const loadRoutes = () => {
         getJSON<RouteInfo[]>(`/api/application/${application.uuid}/route`)
-            .then(setRoutes);
+            .then(setRoutes)
+            .catch(e => toast.error("Unable to fetch Routes " + e, {
+                theme: "colored"
+            }));
     }
 
     useEffect(loadRoutes, [application]);
 
     const deleteRoute = (route: RouteInfo) => {
         apiDelete(`/api/application/${application.uuid}/route/${route.uuid}`)
+            .catch(e => toast.error("Unable to delete Route " + e, {
+                theme: "colored"
+            }))
             .finally(loadRoutes);
     }
 
@@ -43,6 +50,12 @@ const RouteEdit: React.FC<RouteEditProps> = props => {
                 setRouteName("");
                 setRouteDesc("");
             })
+            .then(() => toast.success("Created Route!", {
+                theme: "colored"
+            }))
+            .catch(e => toast.error("Unable to create Route " + e, {
+                theme: "colored"
+            }))
             .finally(loadRoutes);
     }
 

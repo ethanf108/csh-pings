@@ -1,5 +1,6 @@
 import { ChangeEvent } from "react";
 import { useState } from "react";
+import { toast } from "react-toastify";
 import { Button, Card, CardBody, Container, Form, FormGroup, FormText, Input } from "reactstrap";
 import { post } from "../../API/API";
 import { UserInfo } from "../../API/Types";
@@ -37,7 +38,15 @@ const ApplicationCreate: React.FC = () => {
             webURL: formData.url,
             maintainers: users.map(u => u.username)
         })
-            .then(() => window.location.assign("/"))
+            .then(() => {
+                toast.success("Created Application!", {
+                    theme: "colored"
+                });
+                window.location.assign("/")
+            })
+            .catch(e => toast.error("Unable to create application " + e, {
+                theme: "colored"
+            }));
     }
 
     return (

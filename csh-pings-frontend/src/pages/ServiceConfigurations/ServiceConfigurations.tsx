@@ -2,6 +2,7 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import { Badge, Button, Card, CardBody, CardHeader, Col, Container, Row, Table } from "reactstrap";
 import { apiDelete, getJSON } from "../../API/API";
 import { ServiceConfigurationInfo } from "../../API/Types";
@@ -12,13 +13,23 @@ const ServiceConfigurations: React.FC = () => {
     const [serviceConfigurations, setServiceConfigurations] = useState<ServiceConfigurationInfo[]>([]);
 
     const updateServiceConfigurations = () => {
-        getJSON<ServiceConfigurationInfo[]>("/api/service-configuration/").then(setServiceConfigurations);
+        getJSON<ServiceConfigurationInfo[]>("/api/service-configuration/")
+            .then(setServiceConfigurations)
+            .catch(e => toast.error("Unable to fetch Service Configurations " + e, {
+                theme: "colored"
+            }));
     }
 
     useEffect(updateServiceConfigurations, []);
 
     const deleteService = (con: ServiceConfigurationInfo) => {
         apiDelete(`/api/service-configuration/${con.uuid}`)
+            .then(() => toast.success("Deleted Service Configuration!", {
+                theme: "colored"
+            }))
+            .catch(e => toast.error("Unable to delete Service Configuration " + e, {
+                theme: "colored"
+            }))
             .finally(updateServiceConfigurations)
     }
 
