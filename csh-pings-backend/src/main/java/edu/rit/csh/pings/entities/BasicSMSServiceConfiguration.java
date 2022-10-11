@@ -18,11 +18,11 @@ import java.util.Map;
 @ServiceDescription(name = "sms", description = "SMS / MMS")
 public final class BasicSMSServiceConfiguration extends ServiceConfiguration implements ServiceMarker {
 
-    @Column(nullable = false)
+    @Column
     @ConfigurableProperty(name = "phone-num", description = "Phone Number", type = ConfigurableProperty.Type.TEL)
     private String phoneNum;
 
-    @Column(nullable = false)
+    @Column
     @ConfigurableProperty(
             name = "carrier",
             description = "Carrier",
@@ -36,7 +36,7 @@ public final class BasicSMSServiceConfiguration extends ServiceConfiguration imp
             })
     private String carrier;
 
-    @Column(nullable = false)
+    @Column
     @ConfigurableProperty(
             name = "method",
             description = "SMS or MMS",
