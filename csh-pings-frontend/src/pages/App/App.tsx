@@ -11,6 +11,8 @@ import Priviliged from "../../components/Privileged";
 import NavBar from "../../components/NavBar";
 import { Container } from "reactstrap";
 import Splash from "../Splash";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface UserSettings {
     superuserMode: boolean
@@ -46,6 +48,7 @@ const App: React.FC = () => {
             <Router>
                 <Container className="main" fluid>
                     <NavBar />
+                    <ToastContainer theme="colored" hideProgressBar newestOnTop className="py-4 my-4" />
                     <Container>
                         <Routes>
                             <Route path="/" element={<Splash />} />

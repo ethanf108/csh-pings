@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { Button, Card, CardBody, CardHeader, Container, Form, Input } from "reactstrap";
 import { getJSON, post } from "../../API/API";
 import { ServiceConfigurationProperty, ServiceInfo } from "../../API/Types";
@@ -42,9 +43,11 @@ const ServiceConfigurationCreate: React.FC = () => {
     const [services, setServices] = useState<ServiceInfo[]>([]);
 
     useEffect(() => {
-        getJSON<ServiceInfo[]>("/api/service/").then(data =>
-            setServices(data.filter(s => s.name !== "web"))
-        )
+        getJSON<ServiceInfo[]>("/api/service/")
+            .then(data => setServices(data.filter(s => s.name !== "web")))
+            .catch(e => toast.error("Unable to fetch Services " + e, {
+                theme: "colored"
+            }));
     }, []);
 
     useEffect(() => {
@@ -60,7 +63,10 @@ const ServiceConfigurationCreate: React.FC = () => {
                         value: ""
                     }))
                 }))
-            });
+            })
+            .catch(e => toast.error("Unable to fetch Service Properties " + e, {
+                theme: "colored"
+            }));
     }, [formData.service]);
 
     const canSubmit = () => {
@@ -87,7 +93,13 @@ const ServiceConfigurationCreate: React.FC = () => {
             description: formData.description
         }
         post("/api/service-configuration/", body)
-            .then(() => window.location.assign("/service-configuration"));
+            .then(() => toast.success("Created Service Configuration!", {
+                theme: "colored"
+            }))
+            .then(() => window.location.assign("/service-configuration"))
+            .catch(e => toast.error("Unable to create Service Configuration " + JSON.stringify(e), {
+                theme: "colored"
+            }));
     }
 
     return (

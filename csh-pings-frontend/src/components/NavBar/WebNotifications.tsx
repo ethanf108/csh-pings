@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell, faCircle } from "@fortawesome/free-solid-svg-icons";
 import { getJSON, post } from "../../API/API";
 import { WebNotificationInfo } from "../../API/Types";
+import { toast } from "react-toastify";
 
 const WebNotifications: React.FC = () => {
 
@@ -23,7 +24,10 @@ const WebNotifications: React.FC = () => {
                     date: new Date(n.date)
                 }))
             )
-            .then(setNotifications);
+            .then(setNotifications)
+            .catch(e => toast.error("Unable to fetch Notifications " + e, {
+                theme: "colored"
+            }));
     }, []);
 
     const markAsRead = () => {
@@ -44,7 +48,7 @@ const WebNotifications: React.FC = () => {
             <DropdownMenu>
                 {
                     notifications
-                    .sort((a,b)=>b.date.getTime()-a.date.getTime())
+                        .sort((a, b) => b.date.getTime() - a.date.getTime())
                         .map((item, index) =>
                             <DropdownItem key={index} disabled>
                                 <FontAwesomeIcon icon={faCircle} className="mr-2 pl-0" color={item.unread ? "#B0197E" : "#FFFFFF"} />

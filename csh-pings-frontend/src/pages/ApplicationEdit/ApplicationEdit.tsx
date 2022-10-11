@@ -2,6 +2,7 @@ import { faCheck, faEdit, faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import { Button, Card, CardBody, CardHeader, Container, Input } from "reactstrap";
 import { getJSON, patch, post } from "../../API/API";
 import { ApplicationInfo } from "../../API/Types";
@@ -18,7 +19,10 @@ const ApplicationEdit: React.FC = () => {
 
     const loadApplication = () => {
         getJSON<ApplicationInfo>(`/api/application/${uuid}`)
-            .then(setApplication);
+            .then(setApplication)
+            .catch(e => toast.error("Unable to fetch Application " + e, {
+                theme: "colored"
+            }));
     }
 
     useEffect(
@@ -51,6 +55,9 @@ const ApplicationEdit: React.FC = () => {
             patch(`/api/application/${application.uuid}`, {
                 [prop]: appEdit[prop]
             })
+                .catch(e => toast.error("Unable to save Application changes " + e, {
+                    theme: "colored"
+                }))
                 .finally(loadApplication)
                 .finally(() => setEditing(null))
         }
@@ -59,7 +66,15 @@ const ApplicationEdit: React.FC = () => {
     const publish = () => {
         if (application) {
             post(`/api/application/${application.uuid}/publish`)
-                .then(loadApplication)
+                .then(r => {
+                    loadApplication();
+                    toast.success("Published Application!", {
+                        theme: "colored"
+                    })
+                })
+                .catch(e => toast.error("Unable to public Application " + e, {
+                    theme: "colored"
+                }));
         }
     }
 
@@ -88,7 +103,7 @@ const ApplicationEdit: React.FC = () => {
                                     bsSize="sm"
                                 />
                                 {
-                                    (application.published && val[0]==="name") ?
+                                    (application.published && val[0] === "name") ?
                                         <></>
                                         :
                                         editing === val[0] ?

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import { Container } from "reactstrap";
 import { post } from "../../API/API";
 
@@ -17,6 +18,9 @@ const Verify: React.FC = () => {
         }).then(r => {
             if (r.status === 200) {
                 setVerifyState("done");
+                toast.success("Verified!", {
+                    theme: "colored"
+                })
             } else {
                 r.text().then(t => {
                     console.error("Error from server", t);
@@ -25,7 +29,10 @@ const Verify: React.FC = () => {
             }
         }).catch(e => {
             console.error("Error sending verification", e);
-            setVerifyState("err76bda2371b8eef2efd8ceb75or");
+            setVerifyState("error");
+            toast.error("Error verifying " + e, {
+                theme: "colored"
+            })
         })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
