@@ -37,10 +37,10 @@ public abstract class ServiceConfiguration {
     @Column(nullable = false)
     private boolean verified;
 
-    @OneToMany(mappedBy = "serviceConfiguration", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "serviceConfiguration", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<VerificationRequest> verificationRequests;
 
-    @OneToMany(mappedBy = "serviceConfiguration", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "serviceConfiguration", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<UserRegistration> userRegistrations;
 
     public abstract void create(Map<String, String> properties);

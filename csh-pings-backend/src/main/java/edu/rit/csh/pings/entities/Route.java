@@ -35,9 +35,9 @@ public class Route {
     @JoinColumn(name = "application")
     private Application application;
 
-    @OneToMany(mappedBy = "route", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "route", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<UserRegistration> userRegistrations;
 
-    @OneToMany(mappedBy = "route", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "route", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<WebNotification> webNotifications;
 }
