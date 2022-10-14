@@ -69,7 +69,7 @@ public class ServiceConfigurationManager {
         WebNotificationConfiguration wc = new WebNotificationConfiguration();
         wc.setUsername(username);
         wc.setUuid(UUID.randomUUID());
-        wc.setUserRegistrations(Set.of());
+        wc.setUserRegistrations(new HashSet<>());
         wc.setVerificationRequests(Set.of());
         wc.create(Map.of());
         wc.setDescription("Default Pings Web Notifications");
