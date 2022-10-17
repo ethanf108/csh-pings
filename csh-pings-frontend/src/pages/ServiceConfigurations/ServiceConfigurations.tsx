@@ -44,13 +44,13 @@ const ServiceConfigurations: React.FC = () => {
                     serviceConfigurations
                         .filter(n => n.service.name !== "web")
                         .map((config, index) =>
-                            <Col key={index} className="py-3">
-                                <Card>
+                            <Col key={index} className="py-3" xs={12} sm={12} md={6} lg={4} xl={4} xxl={3}>
+                                <Card className="h-100">
                                     <CardHeader>
                                         {config.description}
                                         <Badge className="mx-2" color={config.verified ? "success" : "warning"}>{config.verified ? "Verified" : "Not Verified"}</Badge>
                                     </CardHeader>
-                                    <CardBody>
+                                    <CardBody className="d-flex flex-column">
                                         {
                                             config.properties.length > 0 &&
                                             <Table bordered size="sm">
@@ -72,7 +72,7 @@ const ServiceConfigurations: React.FC = () => {
                                                 </tbody>
                                             </Table>
                                         }
-                                        <Container className="d-flex p-0">
+                                        <Container className="d-flex p-0 mt-auto">
                                             <ConfirmButton id={`delete-${config.uuid}`} onClick={() => deleteService(config)} buttonClassName="flex-grow-1 btn-danger">Delete</ConfirmButton>
                                         </Container>
                                     </CardBody>

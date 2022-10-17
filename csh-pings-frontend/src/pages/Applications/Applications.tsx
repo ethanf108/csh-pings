@@ -63,7 +63,7 @@ const Applications: React.FC = () => {
                     applications.elements
                     .filter(a=>a.published||userSettings.superuserMode)
                     .map((app, index) =>
-                        <Col key={index} className="my-3">
+                        <Col key={index} className="my-3" xs={12} sm={12} md={6} lg={4} xl={4} xxl={3}>
                             <Card className="bg-secondary">
                                 <CardHeader>
                                     {app.name}
@@ -87,7 +87,7 @@ const Applications: React.FC = () => {
                                     {
                                         userSettings.superuserMode &&
                                         <Link to={`/application/${app.uuid}/edit`}>
-                                            <Container className="d-flex p-0 py-1">
+                                            <Container className="d-flex p-0 py-2">
                                                 <Button size="sm" color="primary" className="flex-grow-1">
                                                     Edit
                                                 </Button>
