@@ -25,9 +25,6 @@ const NavBar: React.FunctionComponent = () => {
       <Collapse isOpen={isOpen} navbar>
         <Nav navbar>
           <NavItem>
-            <NavLink to="/" className="nav-link">Home</NavLink>
-          </NavItem>
-          <NavItem>
             <NavLink to="/application" className="nav-link">Applications</NavLink>
           </NavItem>
           <NavItem>

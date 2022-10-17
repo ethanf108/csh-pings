@@ -51,7 +51,7 @@ const App: React.FC = () => {
                     <ToastContainer theme="colored" hideProgressBar newestOnTop className="py-4 my-4" />
                     <Container>
                         <Routes>
-                            <Route path="/" element={<Splash />} />
+                            <Route path="/" element={<ServiceConfigurations />} />
                             <Route path="/application" element={<Applications />} />
                             <Route path="/application/:uuid/configure" element={<ApplicationConfiguration />} />
                             <Route path="/application/create" element={<Priviliged><ApplicationCreate /></Priviliged>} />
