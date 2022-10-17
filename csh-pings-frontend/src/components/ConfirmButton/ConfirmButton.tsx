@@ -13,12 +13,22 @@ interface ConfirmButtonProps extends PropsWithChildren {
 }
 
 const ConfirmButton: React.FC<ConfirmButtonProps> = (props) => {
-    
+
     const [open, setOpen] = useState(false);
 
     return (
         <>
-            <Button id={props.id} className={"btn btn-sm " + props.buttonClassName} disabled={props.disabled} onClick={() => setOpen(o => !o)} onBlur={() => setOpen(false)}>{props.children}</Button>
+            <Button
+                id={props.id}
+                className={"btn btn-sm " + props.buttonClassName}
+                disabled={props.disabled}
+                onClick={() => setOpen(o => !o)}
+                onBlur={() => setOpen(false)}
+                onTouchCancel={() => setOpen(false)}
+                onTouchEnd={() => setOpen(false)}
+            >
+                {props.children}
+            </Button>
             <Popover target={props.id} isOpen={open} placement={props.placement || "bottom"}>
                 <PopoverHeader>{props.headerText || "Are you sure?"}</PopoverHeader>
                 <PopoverBody>
