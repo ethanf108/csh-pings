@@ -36,14 +36,6 @@ public final class BasicSMSServiceConfiguration extends ServiceConfiguration imp
             })
     private String carrier;
 
-    @Column
-    @ConfigurableProperty(
-            name = "method",
-            description = "SMS or MMS",
-            type = ConfigurableProperty.Type.ENUM,
-            enumValues = {"sms", "mms"})
-    private String method;
-
     @Override
     public void create(Map<String, String> properties) {
         final String phoneNum = properties.get("phone-num");
@@ -60,10 +52,5 @@ public final class BasicSMSServiceConfiguration extends ServiceConfiguration imp
             throw new Error("How", e);
         }
         this.carrier = carrier;
-        final String method = properties.get("method");
-        if (!method.equalsIgnoreCase("sms") && !method.equalsIgnoreCase("mms")) {
-            throw new IllegalArgumentException("Invalid Method");
-        }
-        this.method = method;
     }
 }
