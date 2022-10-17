@@ -74,7 +74,7 @@ public class ApplicationController {
         List<ApplicationInfo> ret = new ArrayList<>(length);
         final Page<Application> query = this.applicationManager.get(page, length);
         for (Application app : query) {
-            if (!app.isPublished() && !(hidden && app.isMaintainer(user))) {
+            if (!app.isPublished() && !app.isMaintainer(user.getUsername()) && !(hidden && user.isRTP())) {
                 continue;
             }
             ApplicationInfo ai = new ApplicationInfo();
