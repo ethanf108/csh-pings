@@ -11,6 +11,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.NoSuchElementException;
 
@@ -21,7 +22,8 @@ public class Controllers {
 
     @ExceptionHandler(UserAccessException.class)
     private ResponseEntity<ErrorInfo> userAccessException(UserAccessException e) {
-        this.log.warn("User Access Exception", e);
+        this.log.debug("User Access Exception");
+        this.log.trace(e);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorInfo(e.getMessage()));
     }
 
@@ -33,7 +35,8 @@ public class Controllers {
 
     @ExceptionHandler(NoSuchElementException.class)
     private ResponseEntity<ErrorInfo> noSuchElementException(NoSuchElementException e) {
-        this.log.info("No Such Element Exception", e);
+        this.log.info("No Such Element Exception");
+        this.log.trace(e);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorInfo("Not found"));
     }
 
@@ -45,14 +48,30 @@ public class Controllers {
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     private ResponseEntity<ErrorInfo> methodNotSupported(HttpRequestMethodNotSupportedException e) {
-        this.log.debug("Wrong method for endpoint", e);
+        this.log.debug("Wrong method for endpoint: " + e.getMethod());
+        this.log.trace(e);
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(new ErrorInfo("Method not Allowed"));
     }
 
     @ExceptionHandler(MissingRequestHeaderException.class)
     private ResponseEntity<ErrorInfo> missingRequestHeader(MissingRequestHeaderException e) {
         this.log.debug("Missing Request Header: " + e.getHeaderName());
+        this.log.trace(e);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorInfo("Missing Header: " + e.getHeaderName()));
+    }
+
+    @ExceptionHandler(HttpClientErrorException.NotFound.class)
+    private ResponseEntity<ErrorInfo> notFound(HttpClientErrorException.NotFound e) {
+        this.log.debug("404 Not Found");
+        this.log.trace(e);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorInfo("404 Not Found"));
+    }
+
+    @ExceptionHandler(HttpClientErrorException.class)
+    private ResponseEntity<ErrorInfo> clientException(HttpClientErrorException e) {
+        this.log.debug("Client error 400: " + e.getMessage());
+        this.log.trace(e);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorInfo("404 Not Found"));
     }
 
     @ExceptionHandler(Exception.class)
