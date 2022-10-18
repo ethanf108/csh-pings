@@ -61,7 +61,7 @@ const Applications: React.FC = () => {
             <Row>
                 {
                     applications.elements
-                    .filter(a=>a.published||userSettings.superuserMode)
+                    // .filter(a=>a.published||userSettings.superuserMode)
                     .map((app, index) =>
                         <Col key={index} className="my-3" xs={12} sm={12} md={6} lg={4} xl={4} xxl={3}>
                             <Card className="bg-secondary">
