@@ -55,10 +55,10 @@ public class ServiceConfigurationController {
         config.setUsername(user.getUsername());
         config.create(create.getProperties());
         config.setDescription(create.getDescription());
-        this.serviceConfigurationManager.save(config);
-        this.log.debug("Created new Service Configuration. Type: " + create.getServiceId() + ", UUID: " + config.getUuid());
         this.externalDispatchService.getExternalService(config).sendVerification(config);
         this.log.debug("Sent verification code");
+        this.serviceConfigurationManager.save(config);
+        this.log.debug("Created new Service Configuration. Type: " + create.getServiceId() + ", UUID: " + config.getUuid());
     }
 
     @DeleteMapping("/api/service-configuration/{uuid}")
