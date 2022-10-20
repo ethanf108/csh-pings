@@ -15,11 +15,15 @@ import java.util.Optional;
 @NoArgsConstructor
 @Getter
 @Setter
-@ServiceDescription(name = "telegram", description = "Telegram Messenger")
+@ServiceDescription(id = "telegram", name = "Telegram Messenger", description = "Send pings to your Telegram Account.")
 public final class TelegramServiceConfiguration extends ServiceConfiguration implements ServiceMarker {
 
     @Column
-    @ConfigurableProperty(name = "telegram_username", description = "Telegram Username", type = ConfigurableProperty.Type.TEXT)
+    @ConfigurableProperty(
+            id = "telegram_username",
+            name = "Telegram Username",
+            description = "Valid Telegram Username. Please add <a href=\"https://t.me/cshpings\">The Pings Bot</a> before creating",
+            type = ConfigurableProperty.Type.TEXT)
     private String telegramUsername;
 
     @Column

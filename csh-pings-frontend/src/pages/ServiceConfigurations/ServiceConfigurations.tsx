@@ -44,6 +44,7 @@ const ServiceConfigurations: React.FC = () => {
                     serviceConfigurations
                         .filter(n => n.service.name !== "web")
                         .map((config, index) =>
+                            config.service.id !== "web" &&
                             <Col key={index} className="py-3" xs={12} sm={12} md={6} lg={4} xl={4} xxl={3}>
                                 <Card className="h-100">
                                     <CardHeader>
@@ -64,7 +65,7 @@ const ServiceConfigurations: React.FC = () => {
                                                     {
                                                         config.properties.map((prop, index) =>
                                                             <tr key={index}>
-                                                                <th>{prop.description}</th>
+                                                                <th>{prop.name}</th>
                                                                 <td>{prop.value}</td>
                                                             </tr>
                                                         )

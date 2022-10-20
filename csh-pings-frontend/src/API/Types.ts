@@ -31,11 +31,13 @@ export type ApplicationInfo = {
 }
 
 export type ServiceInfo = {
+    id: string,
     name: string,
     description: string
 }
 
 export type ConfigurablePropertyInfo = {
+    id: string,
     name: string,
     description: string,
     value: string
@@ -50,6 +52,7 @@ export type ServiceConfigurationInfo = {
 }
 
 export type ServiceConfigurationProperty = {
+    id: string,
     name: string,
     description: string,
     type: InputType,

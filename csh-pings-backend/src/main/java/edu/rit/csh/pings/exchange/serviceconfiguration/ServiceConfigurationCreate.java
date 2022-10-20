@@ -11,7 +11,7 @@ import java.util.Map;
 @Setter
 public class ServiceConfigurationCreate {
 
-    private String name;
+    private String serviceId;
     private String description;
     private Map<String, String> properties;
 }

@@ -16,6 +16,11 @@ import java.lang.annotation.Target;
 public @interface ConfigurableProperty {
 
     /**
+     * @return id of the property
+     */
+    String id();
+
+    /**
      * Name of the Property. Required.
      *
      * @return identifiable name, /[a-zA-Z0-9_-]/

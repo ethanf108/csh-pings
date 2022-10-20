@@ -13,6 +13,7 @@ import java.util.List;
 @Setter
 public class ServiceConfigurationProperty {
 
+    private String id;
     private String name;
     private String description;
     private String type;
