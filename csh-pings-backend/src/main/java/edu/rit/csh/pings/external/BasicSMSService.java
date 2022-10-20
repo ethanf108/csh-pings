@@ -21,6 +21,7 @@ public class BasicSMSService implements ExternalService<BasicSMSServiceConfigura
             case "verizon" -> "vzwpix.com";
             case "tmobile", "t-mobile" -> "tmomail.net";
             case "sprint" -> "pm.sprint.com";
+            case "google fi" -> "msg.fi.google.com";
             default -> throw new IllegalArgumentException("Invalid Carrier");
         };
     }

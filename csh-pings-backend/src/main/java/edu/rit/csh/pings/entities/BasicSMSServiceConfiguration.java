@@ -33,7 +33,8 @@ public final class BasicSMSServiceConfiguration extends ServiceConfiguration imp
                     "Boost Mobile",
                     "Sprint",
                     "T-Mobile",
-                    "Verizon"
+                    "Verizon",
+                    "Google Fi"
             })
     private String carrier;
 
