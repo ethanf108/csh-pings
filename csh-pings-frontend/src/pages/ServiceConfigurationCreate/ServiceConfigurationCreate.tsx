@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { Button, Card, CardBody, CardHeader, Container, Form, Input } from "reactstrap";
+import { Button, Card, CardBody, CardHeader, Container, Form, FormText, Input } from "reactstrap";
 import { getJSON, post } from "../../API/API";
 import { ServiceConfigurationProperty, ServiceInfo } from "../../API/Types";
 
@@ -143,7 +143,7 @@ const ServiceConfigurationCreate: React.FC = () => {
                                             id={`sc-c-${formData.service}-prop-${prop.name}`}
                                             type={prop.type}
                                             onChange={e => setProperty(prop.id, e.target.value)}
-                                            placeholder={prop.description}
+                                            placeholder={prop.name}
                                         >
                                             <option value="" hidden>Select option ...</option>
                                             {
@@ -157,9 +157,10 @@ const ServiceConfigurationCreate: React.FC = () => {
                                             id={`sc-c-${formData.service}-prop-${prop.name}`}
                                             type={prop.type}
                                             onChange={e => setProperty(prop.id, e.target.value)}
-                                            placeholder={prop.description}
+                                            placeholder={prop.name}
                                         />
                                 }
+                                <FormText dangerouslySetInnerHTML={{__html: prop.description}} />
                             </CardBody>
                         </Card>
                     )
