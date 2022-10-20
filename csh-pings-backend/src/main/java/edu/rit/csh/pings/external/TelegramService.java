@@ -118,8 +118,7 @@ public class TelegramService implements ExternalService<TelegramServiceConfigura
     @Override
     public void sendVerification(TelegramServiceConfiguration config) {
         if (!this.usernameToId.containsKey(config.getUsername())) {
-            this.log.warn("Username " + config.getUsername() + " not found");
-            return;
+            throw new IllegalArgumentException("Username not found. Please add the CSH Pings Telegram bot");
         }
         config.setTelegramId(this.usernameToId.get(config.getUsername()));
         final VerificationRequest vr = this.verificationRequestManager.generateVerification(config);
