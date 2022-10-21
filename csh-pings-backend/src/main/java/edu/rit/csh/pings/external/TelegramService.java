@@ -44,7 +44,7 @@ public class TelegramService implements ExternalService<TelegramServiceConfigura
     private String botId;
     private transient TelegramBot bot;
 
-    @Value("${csh.pings.url:https://pings.csh.rit.edu}")
+    @Value("${csh.pings.url:https://pings.csh.rit.edu/}")
     private String url;
 
     @PostConstruct
@@ -123,7 +123,7 @@ public class TelegramService implements ExternalService<TelegramServiceConfigura
         config.setTelegramId(this.usernameToId.get(config.getTelegramUsername()));
         final VerificationRequest vr = this.verificationRequestManager.generateVerification(config);
         this.log.debug("Created VR");
-        final String url = this.url + "verify?token=" + vr.getToken();
+        final String url = this.url + (this.url.endsWith("/") ? "" : "/") + "verify?token=" + vr.getToken();
         final String urlReplacement = "click here";
         final String verificationText = this.verificationTemplate.replace("%%%LINK%%%", urlReplacement).replace("%%%USER%%%", config.getUsername());
         final BaseResponse response = this.bot.execute(
