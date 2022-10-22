@@ -13,6 +13,7 @@ import { Container } from "reactstrap";
 import Splash from "../Splash";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import GitFooter from "../../components/GitFooter";
 
 interface UserSettings {
     superuserMode: boolean
@@ -62,6 +63,7 @@ const App: React.FC = () => {
                             <Route path="*" element={<Splash />} />
                         </Routes>
                     </Container>
+                    <GitFooter />
                 </Container>
             </Router>
         </UserSettingsContext.Provider>
