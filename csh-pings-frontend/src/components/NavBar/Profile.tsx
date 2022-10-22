@@ -9,9 +9,8 @@ import {
 } from "reactstrap";
 import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 import { UserSettingsContext } from "../../pages/App/App";
-import { getJSON } from "../../API/API";
+import { getJSON, toastError } from "../../API/API";
 import { UserInfo } from "../../API/Types";
-import { toast } from "react-toastify";
 
 const Profile: React.FunctionComponent = () => {
 
@@ -24,9 +23,7 @@ const Profile: React.FunctionComponent = () => {
   React.useEffect(() => {
     getJSON<UserInfo>("/api/csh/user")
       .then(data => setUserInfo(data))
-      .catch(e => toast.error("Unable to fetch User Data " + e, {
-        theme: "colored"
-      }));
+      .catch(toastError("Unable to fetch User Data"));
   }, []);
 
   const [userSettings, setUserSettings] = useContext(UserSettingsContext);

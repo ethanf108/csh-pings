@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { Button, Card, CardBody, CardHeader, Container, Input } from "reactstrap";
-import { apiDelete, getJSON, post } from "../../API/API";
+import { apiDelete, getJSON, post, toastError } from "../../API/API";
 import { ApplicationInfo, RouteInfo } from "../../API/Types";
 import ConfirmButton from "../../components/ConfirmButton";
 import CopyButton from "../../components/CopyButton";
@@ -22,18 +22,14 @@ const RouteEdit: React.FC<RouteEditProps> = props => {
     const loadRoutes = () => {
         getJSON<RouteInfo[]>(`/api/application/${application.uuid}/route`)
             .then(setRoutes)
-            .catch(e => toast.error("Unable to fetch Routes " + e, {
-                theme: "colored"
-            }));
+            .catch(toastError("Unable to fetch Routes"));
     }
 
     useEffect(loadRoutes, [application]);
 
     const deleteRoute = (route: RouteInfo) => {
         apiDelete(`/api/application/${application.uuid}/route/${route.uuid}`)
-            .catch(e => toast.error("Unable to delete Route " + e, {
-                theme: "colored"
-            }))
+            .catch(toastError("Unable to delete Route"))
             .finally(loadRoutes);
     }
 
@@ -53,9 +49,7 @@ const RouteEdit: React.FC<RouteEditProps> = props => {
             .then(() => toast.success("Created Route!", {
                 theme: "colored"
             }))
-            .catch(e => toast.error("Unable to create Route " + e, {
-                theme: "colored"
-            }))
+            .catch(toastError("Unable to create Route"))
             .finally(loadRoutes);
     }
 

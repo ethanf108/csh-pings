@@ -2,9 +2,8 @@ import { faArrowUpRightFromSquare, faGear, faPlus } from '@fortawesome/free-soli
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import { Badge, Button, Card, CardBody, CardHeader, Col, Container, Row } from "reactstrap";
-import { getJSON } from '../../API/API';
+import { getJSON, toastError } from '../../API/API';
 import { ApplicationInfo, Paged, UserInfo } from '../../API/Types';
 import Pager from '../../components/Pager';
 import { UserSettingsContext } from '../App/App';
@@ -18,10 +17,7 @@ const Applications: React.FC = () => {
     useEffect(() => {
         getJSON<UserInfo>("/api/csh/user")
             .then(setUser)
-            .catch(e => toast.error("Unable to fetch User Info " + JSON.stringify(e.message), {
-                theme: "colored"
-
-            }))
+            .catch(toastError("Unable to fetch User Info"))
     }, []);
 
     const [applications, setApplications] = useState<Paged<ApplicationInfo>>({
@@ -48,10 +44,7 @@ const Applications: React.FC = () => {
             hidden: userSettings.superuserMode
         })
             .then(setApplications)
-            .catch(e => toast.error("Unable to fetch Applications " + e, {
-                theme: "colored"
-
-            }))
+            .catch(toastError("Unable to fetch Applications"))
     }, [pagination, userSettings.superuserMode]);
 
     return (

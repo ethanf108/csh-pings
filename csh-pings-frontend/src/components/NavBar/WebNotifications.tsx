@@ -8,9 +8,8 @@ import {
 } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell, faCircle } from "@fortawesome/free-solid-svg-icons";
-import { getJSON, post } from "../../API/API";
+import { getJSON, post, toastError } from "../../API/API";
 import { WebNotificationInfo } from "../../API/Types";
-import { toast } from "react-toastify";
 
 const WebNotifications: React.FC = () => {
 
@@ -25,13 +24,12 @@ const WebNotifications: React.FC = () => {
                 }))
             )
             .then(setNotifications)
-            .catch(e => toast.error("Unable to fetch Notifications " + e, {
-                theme: "colored"
-            }));
+            .catch(toastError("Unable to fetch Web Notifications"));
     }, []);
 
     const markAsRead = () => {
         post("/api/web-notification/read")
+        .catch(toastError("Unable to mark Web Notifications as read"))
     }
 
     return (

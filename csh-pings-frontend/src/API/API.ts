@@ -1,3 +1,6 @@
+import { toast } from "react-toastify";
+import { ErrorInfo } from "./Types";
+
 export const baseURL: string = `${window.location.protocol}//${window.location.hostname}${window.location.port ? `:${window.location.port}` : ''}`;
 
 export const getJSON = <T>(url: string, params?: any): Promise<T> => {
@@ -16,7 +19,7 @@ export const getJSON = <T>(url: string, params?: any): Promise<T> => {
     }
     return fetch(baseURL + url)
         .then(body => {
-            if(body.status !== 200){
+            if (body.status !== 200) {
                 throw body;
             }
             return body.json()
@@ -51,12 +54,12 @@ export const post = (url: string, body?: any, params?: any): Promise<Response> =
         }
     }
     return fetch(baseURL + url, describe)
-    .then(response => {
-        if(response.status !== 200){
-            throw response;
-        }
-        return response;
-    });
+        .then(response => {
+            if (response.status !== 200) {
+                throw response;
+            }
+            return response;
+        });
 }
 
 export const patch = (url: string, body?: any, params?: any): Promise<Response> => {
@@ -86,12 +89,12 @@ export const patch = (url: string, body?: any, params?: any): Promise<Response> 
         }
     }
     return fetch(baseURL + url, describe)
-    .then(response => {
-        if(response.status !== 200){
-            throw response;
-        }
-        return response;
-    });
+        .then(response => {
+            if (response.status !== 200) {
+                throw response;
+            }
+            return response;
+        });
 }
 
 //can't name function `delete` 😞
@@ -112,10 +115,18 @@ export const apiDelete = (url: string, params?: any): Promise<Response> => {
     return fetch(baseURL + url, {
         method: "DELETE"
     })
-    .then(response => {
-        if(response.status !== 200){
-            throw response;
-        }
-        return response;
-    });
+        .then(response => {
+            if (response.status !== 200) {
+                throw response;
+            }
+            return response;
+        });
+}
+
+export const toastError = (message: string) => (resp: any) => {
+    resp.json()
+        .then((error: ErrorInfo) =>
+            toast.error(`${message}: ${error.message}`, {
+                theme: "colored"
+            }))
 }

@@ -2,7 +2,7 @@ import { ChangeEvent } from "react";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { Button, Card, CardBody, Container, Form, FormGroup, FormText, Input } from "reactstrap";
-import { post } from "../../API/API";
+import { post, toastError } from "../../API/API";
 import { UserInfo } from "../../API/Types";
 import UserSearch from "../../components/UserSearch";
 
@@ -44,9 +44,7 @@ const ApplicationCreate: React.FC = () => {
                 });
                 window.location.assign("/")
             })
-            .catch(e => toast.error("Unable to create application " + e, {
-                theme: "colored"
-            }));
+            .catch(toastError("Unable to create Application"));
     }
 
     return (

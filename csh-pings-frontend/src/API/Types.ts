@@ -80,3 +80,8 @@ export interface ExternalTokenInfo {
 export interface MaintainerInfo {
     username: string
 }
+
+export interface ErrorInfo {
+    message: string,
+    stackTrace: string
+}
