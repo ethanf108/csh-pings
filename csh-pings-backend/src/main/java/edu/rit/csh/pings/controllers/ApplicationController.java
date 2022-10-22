@@ -77,6 +77,7 @@ public class ApplicationController {
             }
             ApplicationInfo ai = new ApplicationInfo();
             BeanUtils.copyProperties(app, ai);
+            ai.setMaintainers(app.getMaintainers().stream().map(Maintainer::getUsername).toList());
             ret.add(ai);
         }
         return new Paged<>(ret, query.getTotalElements());
@@ -91,6 +92,7 @@ public class ApplicationController {
                 .orElseThrow();
         ApplicationInfo ret = new ApplicationInfo();
         BeanUtils.copyProperties(app, ret);
+        ret.setMaintainers(app.getMaintainers().stream().map(Maintainer::getUsername).toList());
         return ret;
     }
 

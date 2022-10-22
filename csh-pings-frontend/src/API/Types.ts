@@ -27,7 +27,8 @@ export type ApplicationInfo = {
     name: string,
     description: string,
     webURL: string,
-    published: boolean
+    published: boolean,
+    maintainers: string[]
 }
 
 export type ServiceInfo = {
