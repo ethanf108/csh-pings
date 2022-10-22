@@ -14,10 +14,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
@@ -87,10 +85,10 @@ public class ApplicationController {
     @GetMapping("/api/application/{uuid}")
     private ApplicationInfo getApplication(@AuthenticationPrincipal CSHUser user, @PathVariable UUID uuid) {
         this.log.info("GET /api/application/" + uuid);
-        Application app = this.applicationManager.findByUUID(uuid).orElseThrow();
-        if (!app.isPublished() && !user.isRTP()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Application " + uuid + " not found");
-        }
+        Application app = this.applicationManager
+                .findByUUID(uuid)
+                .filter(a -> a.isMaintainer(user.getUsername()) || user.isRTP() || a.isPublished())
+                .orElseThrow();
         ApplicationInfo ret = new ApplicationInfo();
         BeanUtils.copyProperties(app, ret);
         return ret;
