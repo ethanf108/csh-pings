@@ -126,6 +126,7 @@ const ServiceConfigurationCreate: React.FC = () => {
                             placeholder="Description"
                             value={formData.description}
                         />
+                        <FormText>Short name for this configuration</FormText>
                     </CardBody>
                 </Card>
                 {
