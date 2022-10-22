@@ -115,7 +115,7 @@ public class ApplicationController {
             @AuthenticationPrincipal CSHUser user,
             @PathVariable UUID uuid,
             @RequestParam(defaultValue = "true") boolean published) {
-        this.log.info("POST /api/application/{uuid}/publish?published=" + published);
+        this.log.info("POST /api/application/" + uuid + "/publish?published=" + published);
         final Application app = this.applicationManager
                 .findByUUID(uuid)
                 .filter(n -> n.isMaintainer(user))
