@@ -1,0 +1,4 @@
+Hi! Please Click this link to verify this account belongs to %%%USER%%%:
+%%%LINK%%%
+
+If you believe this request was sent in error, or do not recognize this request, please ignore this message and contact an RTP.
