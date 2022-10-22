@@ -59,9 +59,6 @@ public class TelegramService implements ExternalService<TelegramServiceConfigura
 
     @PostConstruct
     private void setupTelegram() {
-        if(true||false){
-            return;
-        }
         if (this.bot != null) {
             return;
         }
