@@ -66,7 +66,7 @@ public class PingController {
             if (!registration.getServiceConfiguration().isVerified()) {
                 continue;
             }
-            this.log.debug("Ping sending: " + registration.getServiceConfiguration().getInfo().name());
+            this.log.debug("Ping sending: " + registration.getServiceConfiguration().getInfo().id());
             this.externalDispatchService.getExternalService(registration.getServiceConfiguration()).sendPing(registration.getRoute(), registration.getServiceConfiguration(), pingData.getBody());
         }
     }

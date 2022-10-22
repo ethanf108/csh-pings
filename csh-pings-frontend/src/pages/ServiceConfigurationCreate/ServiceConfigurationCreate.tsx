@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { Button, Card, CardBody, CardHeader, Container, Form, Input } from "reactstrap";
+import { Button, Card, CardBody, CardHeader, Container, Form, FormText, Input } from "reactstrap";
 import { getJSON, post } from "../../API/API";
 import { ServiceConfigurationProperty, ServiceInfo } from "../../API/Types";
 
@@ -25,14 +25,14 @@ const ServiceConfigurationCreate: React.FC = () => {
         })
     }
 
-    const setProperty = (name: string, value: string) => {
-        if (!name) {
+    const setProperty = (id: string, value: string) => {
+        if (!id) {
             return;
         }
         setFormData({
             ...formData,
             properties: formData.properties?.map(p => {
-                if (p.name === name) {
+                if (p.id === id) {
                     p.value = value;
                 }
                 return p;
@@ -44,7 +44,7 @@ const ServiceConfigurationCreate: React.FC = () => {
 
     useEffect(() => {
         getJSON<ServiceInfo[]>("/api/service/")
-            .then(data => setServices(data.filter(s => s.name !== "web")))
+            .then(data => setServices(data.filter(s => s.id !== "web")))
             .catch(e => toast.error("Unable to fetch Services " + e, {
                 theme: "colored"
             }));
@@ -83,13 +83,13 @@ const ServiceConfigurationCreate: React.FC = () => {
         const body = {
             properties: formData.properties
                 .map(prop => ({
-                    [prop.name]: prop.value
+                    [prop.id]: prop.value
                 }))
                 .reduce((a, b) => ({
                     ...a,
                     ...b
                 })),
-            name: formData.service,
+            serviceId: formData.service,
             description: formData.description
         }
         post("/api/service-configuration/", body)
@@ -112,7 +112,7 @@ const ServiceConfigurationCreate: React.FC = () => {
                             <option value="" hidden>Select option ...</option>
                             {
                                 services.map((service, index) =>
-                                    <option key={index} value={service.name}>{service.description}</option>
+                                    <option key={index} value={service.id}>{service.name}</option>
                                 )
                             }
                         </Input>
@@ -135,15 +135,15 @@ const ServiceConfigurationCreate: React.FC = () => {
                 {
                     formData.properties && formData.properties.map((prop, index) =>
                         <Card key={index} className="my-3">
-                            <CardHeader>{prop.description}</CardHeader>
+                            <CardHeader>{prop.name}</CardHeader>
                             <CardBody className="pt-0">
                                 {
                                     prop.type === "select" ?
                                         <Input
                                             id={`sc-c-${formData.service}-prop-${prop.name}`}
                                             type={prop.type}
-                                            onChange={e => setProperty(prop.name, e.target.value)}
-                                            placeholder={prop.description}
+                                            onChange={e => setProperty(prop.id, e.target.value)}
+                                            placeholder={prop.name}
                                         >
                                             <option value="" hidden>Select option ...</option>
                                             {
@@ -156,10 +156,11 @@ const ServiceConfigurationCreate: React.FC = () => {
                                         <Input
                                             id={`sc-c-${formData.service}-prop-${prop.name}`}
                                             type={prop.type}
-                                            onChange={e => setProperty(prop.name, e.target.value)}
-                                            placeholder={prop.description}
+                                            onChange={e => setProperty(prop.id, e.target.value)}
+                                            placeholder={prop.name}
                                         />
                                 }
+                                <FormText dangerouslySetInnerHTML={{__html: prop.description}} />
                             </CardBody>
                         </Card>
                     )

@@ -12,6 +12,7 @@ import lombok.Setter;
 @Setter
 public class ConfigurablePropertyInfo {
 
+    private String id;
     private String name;
     private String description;
     private String value;

@@ -15,24 +15,26 @@ import java.util.Map;
 @NoArgsConstructor
 @Getter
 @Setter
-@ServiceDescription(name = "sms", description = "SMS / MMS")
+@ServiceDescription(id = "sms", name = "Phone", description = "Text pings to your phone number. Supports MMS")
 public final class BasicSMSServiceConfiguration extends ServiceConfiguration implements ServiceMarker {
 
     @Column
-    @ConfigurableProperty(name = "phone-num", description = "Phone Number", type = ConfigurableProperty.Type.TEL)
+    @ConfigurableProperty(id = "phone-num", name = "Phone Number", description = "Phone Number", type = ConfigurableProperty.Type.TEL)
     private String phoneNum;
 
     @Column
     @ConfigurableProperty(
-            name = "carrier",
-            description = "Carrier",
+            id = "carrier",
+            name = "Carrier",
+            description = "Mobile Phone Provider. Does not work for VoIP",
             type = ConfigurableProperty.Type.ENUM,
             enumValues = {
                     "AT&T",
                     "Boost Mobile",
                     "Sprint",
                     "T-Mobile",
-                    "Verizon"
+                    "Verizon",
+                    "Google Fi"
             })
     private String carrier;
 

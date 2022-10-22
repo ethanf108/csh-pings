@@ -14,11 +14,11 @@ import java.util.Map;
 @NoArgsConstructor
 @Getter
 @Setter
-@ServiceDescription(name = "email", description = "Email Service")
+@ServiceDescription(id = "email", name = "Email", description = "Send ping to an email address")
 public final class EmailServiceConfiguration extends ServiceConfiguration implements ServiceMarker {
 
     @Column
-    @ConfigurableProperty(name = "email", description = "Email Address", type = ConfigurableProperty.Type.EMAIL)
+    @ConfigurableProperty(id = "email", name = "Email Address", description = "Email Address", type = ConfigurableProperty.Type.EMAIL)
     private String toEmail;
 
     @Override

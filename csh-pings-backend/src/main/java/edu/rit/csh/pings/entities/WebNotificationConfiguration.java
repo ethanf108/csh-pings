@@ -12,7 +12,7 @@ import java.util.Map;
 @NoArgsConstructor
 @Setter
 @Getter
-@ServiceDescription(name = "web", description = "Web Notifications")
+@ServiceDescription(id = "web", name = "Web Notifications", description = "Send notifications to pings.csh (default)", allowMultiple = false)
 public final class WebNotificationConfiguration extends ServiceConfiguration implements ServiceMarker {
 
     @Override

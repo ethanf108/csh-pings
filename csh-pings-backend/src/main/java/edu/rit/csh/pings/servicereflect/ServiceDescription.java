@@ -10,14 +10,17 @@ import java.lang.annotation.Target;
 public @interface ServiceDescription {
 
     /**
+     * @return Identifier of the Service
+     */
+    String id();
+
+    /**
      * @return Name of the Service
      */
     String name();
 
     /**
-     * Not required
-     *
-     * @return Description of the Service
+     * @return Description of the Service (help text kinda)
      */
     String description() default "";
 

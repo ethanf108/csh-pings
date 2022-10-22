@@ -44,7 +44,7 @@ public class TelegramService implements ExternalService<TelegramServiceConfigura
     private String botId;
     private transient TelegramBot bot;
 
-    @Value("${csh.pings.url:https://pings.csh.rit.edu}")
+    @Value("${csh.pings.url:https://pings.csh.rit.edu/}")
     private String url;
 
     @PostConstruct
@@ -120,19 +120,18 @@ public class TelegramService implements ExternalService<TelegramServiceConfigura
 
     @Override
     public void sendVerification(TelegramServiceConfiguration config) {
-        if (!this.usernameToId.containsKey(config.getUsername())) {
-            this.log.warn("Username " + config.getUsername() + " not found");
-            return;
+        if (!this.usernameToId.containsKey(config.getTelegramUsername())) {
+            throw new IllegalArgumentException("Username not found. Please add the CSH Pings Telegram bot");
         }
-        config.setTelegramId(this.usernameToId.get(config.getUsername()));
+        config.setTelegramId(this.usernameToId.get(config.getTelegramUsername()));
         final VerificationRequest vr = this.verificationRequestManager.generateVerification(config);
         this.log.debug("Created VR");
-        final String url = this.url + "verify?token=" + vr.getToken();
+        final String url = this.url + (this.url.endsWith("/") ? "" : "/") + "verify?token=" + vr.getToken();
         final String urlReplacement = "click here";
         final String verificationText = this.verificationTemplate.replace("%%%LINK%%%", urlReplacement).replace("%%%USER%%%", config.getUsername());
         final BaseResponse response = this.bot.execute(
                 new SendMessage(
-                        this.usernameToId.get(config.getUsername()),
+                        config.getTelegramId(),
                         verificationText)
                         .entities(
                                 new MessageEntity(
@@ -140,7 +139,7 @@ public class TelegramService implements ExternalService<TelegramServiceConfigura
                                         this.verificationTemplate.indexOf("%%%LINK%%%"),
                                         urlReplacement.length()).url(url)));
         if (!response.isOk()) {
-            this.log.error("Error sending verification request to " + config.getUsername() + ", error code: " + response.errorCode());
+            this.log.error("Error sending verification request to " + config.getTelegramId() + ", error code: " + response.errorCode());
         } else {
             this.log.info("Sent Message");
         }
