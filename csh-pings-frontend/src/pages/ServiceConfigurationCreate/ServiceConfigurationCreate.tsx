@@ -19,10 +19,11 @@ const ServiceConfigurationCreate: React.FC = () => {
     });
 
     const setService = (value: string) => {
-        setFormData({
-            ...formData,
-            service: value
-        })
+        setFormData(old => ({
+            ...old,
+            service: value,
+            description: "",
+        }))
     }
 
     const setProperty = (id: string, value: string) => {
@@ -123,6 +124,7 @@ const ServiceConfigurationCreate: React.FC = () => {
                                 description: e.target.value
                             })}
                             placeholder="Description"
+                            value={formData.description}
                         />
                     </CardBody>
                 </Card>
@@ -152,6 +154,7 @@ const ServiceConfigurationCreate: React.FC = () => {
                                             type={prop.type}
                                             onChange={e => setProperty(prop.id, e.target.value)}
                                             placeholder={prop.name}
+                                            value={prop.value}
                                         />
                                 }
                                 <FormText dangerouslySetInnerHTML={{__html: prop.description}} />
