@@ -26,7 +26,7 @@ public class DiscordService implements ExternalService<DiscordServiceConfigurati
     private static final Log botLog = LogFactory.getLog("pings.discord_service.bot_stdout");
 
     @Value("${csh.pings.discord.bot_id}")
-    static String DISCORD_TOKEN;
+    private String DISCORD_TOKEN;
 
     // Define a process instance variable to run the discord service
     Process p;
@@ -42,14 +42,13 @@ public class DiscordService implements ExternalService<DiscordServiceConfigurati
 //        log.info("Runtime string: " + Runtime.getRuntime().toString());
         try {
             Runtime r = Runtime.getRuntime();
-            if (r == null) {
-                log.error("Runtime is null");
-            } else {
-                log.info("Runtime: " + r);
-                // TODO: Don't commit credentials
-                p = r.exec(new String[] {"csh-pings-backend/venv/bin/python3", "csh-pings-backend/src/discordBot.py", "MTAzMjQ2NjIxMjgwMzg1MDMyMQ.G14JXl.G9YG8mf9PSMuu7uVtJrVeNI4vxclQeIfDxMioU"});
-//                p = r.exec(new String[] {"cat", "/dev/urandom"});
+            log.info("Runtime: " + r);
+            if (DISCORD_TOKEN == null) {
+                log.error("DISCORD_TOKEN is null");
+                throw new RuntimeException("DISCORD_TOKEN is null");
             }
+            p = r.exec(new String[] {"csh-pings-backend/venv/bin/python3", "csh-pings-backend/src/discordBot.py", DISCORD_TOKEN});
+//            p = r.exec(new String[] {"cat", "/dev/urandom"});
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
