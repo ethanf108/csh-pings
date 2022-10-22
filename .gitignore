@@ -1,1 +1,6 @@
 credentials.properties
+.idea/
+target/
+venv/
+.env
+csh-pings.iml
