@@ -44,10 +44,10 @@ public class DiscordService implements ExternalService<DiscordServiceConfigurati
 
 
     private final Collection<GatewayIntent> intents = EnumSet.of(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES);
-    private JDA jda = JDABuilder.create(DISCORD_TOKEN, intents).build();
+    private final JDA jda = JDABuilder.create(DISCORD_TOKEN, intents).build();
 
     @PostConstruct
-    public void readTemplates() {
+    private void readTemplates() {
         try {
             this.pingTemplate = readFully(new ClassPathResource("discord_ping_template.txt").getInputStream());
             this.verificationTemplate = readFully(new ClassPathResource("discord_verification_template.txt").getInputStream());
@@ -57,8 +57,10 @@ public class DiscordService implements ExternalService<DiscordServiceConfigurati
     }
 
     @PostConstruct
-    public void setup() {
+    private void setup() {
         try {
+    	    // This would only ever be interrupted by a force exit, for example ^C while the program is starting the bot.
+    	    // They won't ever happen during normal startup and shutdown.
             jda.awaitReady();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -71,15 +73,18 @@ public class DiscordService implements ExternalService<DiscordServiceConfigurati
                 usernameToId.put(member.getUser().getName() + "#" + member.getUser().getDiscriminator(), member.getUser());
             });
         });
-        sendMessageTest("Creeper", "3621", "Discord bot is online!");
     }
 
     @PreDestroy
-    public void shutdown() throws InterruptedException {
-        sendMessageTest("Creeper", "3621", "Discord bot is shutting down!");
+    private void shutdown() {
         jda.shutdown();
-        jda.awaitStatus(JDA.Status.SHUTDOWN);
-        log.info("Discord bot has shut down successfully");
+        try {
+        	// Same as jda.awaitReady() above.
+        	jda.awaitStatus(JDA.Status.SHUTDOWN);
+        } catch (InterruptedException e) {
+        	throw new RuntimeException(e);
+        }
+        log.info("Discord service shutdown successfully");
     }
 
     public void sendPing(Route route, DiscordServiceConfiguration config, String body) {
@@ -101,20 +106,11 @@ public class DiscordService implements ExternalService<DiscordServiceConfigurati
         sendMessage(config, verificationText);
     }
 
-    public void sendMessage(DiscordServiceConfiguration config, String message) {
+    private void sendMessage(DiscordServiceConfiguration config, String message) {
         User user = usernameToId.get(config.getDiscordUsername() + "#" + config.getDiscordDiscriminator());
         if (user == null) {
             log.error("Could not find user " + config.getDiscordUsername() + "#" + config.getDiscordDiscriminator());
-            return;
-        }
-        user.openPrivateChannel().queue(channel -> channel.sendMessage(message).queue());
-    }
-
-    private void sendMessageTest(String username, String discriminator, String message) {
-        User user = usernameToId.get(username + "#" + discriminator);
-        if (user == null) {
-            log.error("Could not find user " + username + "#" + discriminator);
-            return;
+			throw new IllegalArgumentException("User " + config.getDiscordUsername() + "#" + config.getDiscordDiscriminator() + " not found.");
         }
         user.openPrivateChannel().queue(channel -> channel.sendMessage(message).queue());
     }

@@ -20,11 +20,11 @@ public final class DiscordServiceConfiguration extends ServiceConfiguration impl
 
     @Column
     @ConfigurableProperty(id = "discord_username", name = "Discord Username", type = ConfigurableProperty.Type.TEXT)
-    String discordUsername;
+    private String discordUsername;
 
     @Column
     @ConfigurableProperty(id = "discord_discriminator", name = "Discord Discriminator", description = "The 4 numbers to uniquely identify users with the same username" ,type = ConfigurableProperty.Type.TEXT)
-    String discordDiscriminator;
+    private String discordDiscriminator;
 
     @Override
     public void create(Map<String, String> properties) {

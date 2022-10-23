@@ -18,5 +18,4 @@ RUN mvn package -e -B
 FROM openjdk:18-jdk-alpine
 COPY --from=maven target/*.jar app.jar
 RUN apk add zip
-RUN apk add python3
 CMD java -jar app.jar
