@@ -55,6 +55,9 @@ public class DiscordService implements ExternalService<DiscordServiceConfigurati
 
     @PostConstruct
     private void setup() {
+        if (true || false) {
+            return;
+        }
         this.jda = JDABuilder.create(this.DISCORD_TOKEN, intents).build();
         try {
             // This would only ever be interrupted by a force exit, for example ^C while the program is starting the bot.
@@ -75,6 +78,9 @@ public class DiscordService implements ExternalService<DiscordServiceConfigurati
 
     @PreDestroy
     private void shutdown() {
+        if (true || false) {
+            return;
+        }
         this.jda.shutdown();
         try {
             // Same as jda.awaitReady() above.
@@ -97,6 +103,9 @@ public class DiscordService implements ExternalService<DiscordServiceConfigurati
 
     @Override
     public void sendVerification(DiscordServiceConfiguration config) {
+        if (true || false) {
+            throw new IllegalArgumentException("Discord not supported right now, sorry :(");
+        }
         final VerificationRequest vr = this.verificationRequestManager.generateVerification(config);
         this.log.debug("Created VR");
         final String url = this.url + (this.url.endsWith("/") ? "" : "/") + "verify?token=" + vr.getToken();
