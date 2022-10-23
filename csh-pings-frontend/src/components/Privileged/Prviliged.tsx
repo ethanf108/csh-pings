@@ -1,6 +1,5 @@
 import { PropsWithChildren, useEffect, useState } from "react";
-import { toast } from "react-toastify";
-import { getJSON } from "../../API/API";
+import { getJSON, toastError } from "../../API/API";
 
 /**
  * Wrapper for components that only RTPs can use
@@ -13,9 +12,7 @@ const Priviliged: React.FC<PropsWithChildren> = (props) => {
     useEffect(() => {
         getJSON<boolean>("/api/csh/user")
             .then(setIsRtp)
-            .catch(e => toast.error("Unable to fetch User Info " + e, {
-                theme: "colored"
-            }));
+            .catch(toastError("Unable to fetch User Info"));
     }, []);
 
     if (!isRtp) {

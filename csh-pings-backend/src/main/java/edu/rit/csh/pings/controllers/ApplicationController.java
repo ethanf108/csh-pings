@@ -14,10 +14,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
@@ -79,6 +77,7 @@ public class ApplicationController {
             }
             ApplicationInfo ai = new ApplicationInfo();
             BeanUtils.copyProperties(app, ai);
+            ai.setMaintainers(app.getMaintainers().stream().map(Maintainer::getUsername).toList());
             ret.add(ai);
         }
         return new Paged<>(ret, query.getTotalElements());
@@ -87,12 +86,13 @@ public class ApplicationController {
     @GetMapping("/api/application/{uuid}")
     private ApplicationInfo getApplication(@AuthenticationPrincipal CSHUser user, @PathVariable UUID uuid) {
         this.log.info("GET /api/application/" + uuid);
-        Application app = this.applicationManager.findByUUID(uuid).orElseThrow();
-        if (!app.isPublished() && !user.isRTP()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Application " + uuid + " not found");
-        }
+        Application app = this.applicationManager
+                .findByUUID(uuid)
+                .filter(a -> a.isMaintainer(user.getUsername()) || user.isRTP() || a.isPublished())
+                .orElseThrow();
         ApplicationInfo ret = new ApplicationInfo();
         BeanUtils.copyProperties(app, ret);
+        ret.setMaintainers(app.getMaintainers().stream().map(Maintainer::getUsername).toList());
         return ret;
     }
 
@@ -115,7 +115,7 @@ public class ApplicationController {
             @AuthenticationPrincipal CSHUser user,
             @PathVariable UUID uuid,
             @RequestParam(defaultValue = "true") boolean published) {
-        this.log.info("POST /api/application/{uuid}/publish?published=" + published);
+        this.log.info("POST /api/application/" + uuid + "/publish?published=" + published);
         final Application app = this.applicationManager
                 .findByUUID(uuid)
                 .filter(n -> n.isMaintainer(user))

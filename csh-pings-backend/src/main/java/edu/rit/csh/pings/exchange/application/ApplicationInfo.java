@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.UUID;
 
 @NoArgsConstructor
@@ -18,4 +19,5 @@ public class ApplicationInfo {
     private String description;
     private String webURL;
     private boolean published;
+    private List<String> maintainers;
 }

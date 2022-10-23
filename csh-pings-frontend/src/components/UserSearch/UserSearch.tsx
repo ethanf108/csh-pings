@@ -1,9 +1,8 @@
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import { Badge, Button, Container, Input } from "reactstrap";
-import { getJSON } from "../../API/API";
+import { getJSON, toastError } from "../../API/API";
 import { UserInfo } from "../../API/Types";
 
 const UserSearch: React.FC<{
@@ -24,9 +23,7 @@ const UserSearch: React.FC<{
         })
             .then(e => e.slice(0, 10))
             .then(setResults)
-            .catch(e => toast.error("Error while searching for users " + e, {
-                theme: "colored"
-            }));
+            .catch(toastError("Unable to search Users"));
     }, [inputText]);
 
     const addUser = (user: UserInfo) => {
@@ -70,7 +67,9 @@ const UserSearch: React.FC<{
             />
             <ul className="dropdown-menu" role="menu" hidden={!inputText || inputText.length < 2 || results.length === 0}>
                 {
-                    results.map((user, index) =>
+                    results
+                    .sort((a,b)=>a.username.localeCompare(b.username))
+                    .map((user, index) =>
                         <Button key={index} size="sm" className="d-block bg-transparent shadow-none y-0" onClick={() => addUser(user)}>
                             {user.fullName} ({user.username})
                         </Button>

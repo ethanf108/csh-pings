@@ -42,7 +42,7 @@ public final class BasicSMSServiceConfiguration extends ServiceConfiguration imp
     public void create(Map<String, String> properties) {
         final String phoneNum = properties.get("phone-num");
         if (!phoneNum.matches("[0-9]{10}")) {
-            throw new IllegalArgumentException("Invalid PhoneNumber");
+            throw new IllegalArgumentException("Invalid Phone Number");
         }
         this.phoneNum = phoneNum;
         final String carrier = properties.get("carrier");

@@ -4,6 +4,8 @@ import edu.rit.csh.pings.auth.CSHUser;
 import edu.rit.csh.pings.exchange.csh.CSHUserInfo;
 import edu.rit.csh.pings.external.LDAPService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,10 +17,13 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class CSHController {
 
+    private final Log log = LogFactory.getLog("pings.csh_controller");
+
     private final LDAPService ldapService;
 
     @GetMapping("/api/csh/user")
     private CSHUserInfo getUserInfo(@AuthenticationPrincipal CSHUser user) {
+        this.log.info("GET /api/csh/user");
         CSHUserInfo ret = new CSHUserInfo();
         ret.setUsername(user.getUsername());
         ret.setRtp(user.isRTP());
@@ -28,6 +33,7 @@ public class CSHController {
 
     @GetMapping("/api/csh/user/{username}/exists")
     private boolean userExists(@PathVariable String username) {
+        this.log.info("GET /api/csh/user/" + username + "/exists");
         return this.ldapService.isValidUsername(username);
     }
 
@@ -43,6 +49,7 @@ public class CSHController {
             @RequestParam(defaultValue = "0") int offset,
             @RequestParam(defaultValue = "10") int limit
     ) {
+        this.log.info("GET /api/csh/search?query=" + query + "&offset=" + offset + "&limit=" + limit);
         if (offset < 0 || limit < 0 || limit > 100) {
             throw new IllegalArgumentException("Invalid parameters");
         }
@@ -52,6 +59,7 @@ public class CSHController {
 
     @GetMapping("/api/csh/user/{username}")
     private CSHUserInfo getUser(@PathVariable String username) {
+        this.log.info("GET /api/csh/user/" + username);
         if (username.isBlank()) {
             throw new IllegalArgumentException("Must be valid username");
         }

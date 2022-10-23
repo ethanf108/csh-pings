@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Button, Card, CardBody, CardHeader, Container, Input } from "reactstrap";
-import { getJSON, patch, post } from "../../API/API";
+import { getJSON, patch, post, toastError } from "../../API/API";
 import { ApplicationInfo } from "../../API/Types";
 import ConfirmButton from "../../components/ConfirmButton";
 import ExternalTokensEdit from "./ExternalTokensEdit";
@@ -55,9 +55,7 @@ const ApplicationEdit: React.FC = () => {
             patch(`/api/application/${application.uuid}`, {
                 [prop]: appEdit[prop]
             })
-                .catch(e => toast.error("Unable to save Application changes " + e, {
-                    theme: "colored"
-                }))
+                .catch(toastError("Unable to save Application changes"))
                 .finally(loadApplication)
                 .finally(() => setEditing(null))
         }
@@ -72,9 +70,7 @@ const ApplicationEdit: React.FC = () => {
                         theme: "colored"
                     })
                 })
-                .catch(e => toast.error("Unable to public Application " + e, {
-                    theme: "colored"
-                }));
+                .catch(toastError("Unable to publish Application"));
         }
     }
 

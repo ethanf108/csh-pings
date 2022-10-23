@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Badge, Button, Card, CardBody, CardHeader, Col, Container, Row, Table } from "reactstrap";
-import { apiDelete, getJSON } from "../../API/API";
+import { apiDelete, getJSON, toastError } from "../../API/API";
 import { ServiceConfigurationInfo } from "../../API/Types";
 import ConfirmButton from "../../components/ConfirmButton";
 
@@ -15,9 +15,7 @@ const ServiceConfigurations: React.FC = () => {
     const updateServiceConfigurations = () => {
         getJSON<ServiceConfigurationInfo[]>("/api/service-configuration/")
             .then(setServiceConfigurations)
-            .catch(e => toast.error("Unable to fetch Service Configurations " + e, {
-                theme: "colored"
-            }));
+            .catch(toastError("Unable to fetch Service Configurations"));
     }
 
     useEffect(updateServiceConfigurations, []);
@@ -27,9 +25,7 @@ const ServiceConfigurations: React.FC = () => {
             .then(() => toast.success("Deleted Service Configuration!", {
                 theme: "colored"
             }))
-            .catch(e => toast.error("Unable to delete Service Configuration " + e, {
-                theme: "colored"
-            }))
+            .catch(toastError("Unable to delete Service Configuration"))
             .finally(updateServiceConfigurations)
     }
 
@@ -43,6 +39,7 @@ const ServiceConfigurations: React.FC = () => {
                 {
                     serviceConfigurations
                         .filter(n => n.service.name !== "web")
+                        .sort((a,b)=>a.description.localeCompare(b.description))
                         .map((config, index) =>
                             config.service.id !== "web" &&
                             <Col key={index} className="py-3" xs={12} sm={12} md={6} lg={4} xl={4} xxl={3}>

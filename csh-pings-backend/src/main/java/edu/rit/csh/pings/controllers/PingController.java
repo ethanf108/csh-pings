@@ -43,7 +43,7 @@ public class PingController {
 
     @PostMapping("/service/route/{routeUUID}/ping")
     private void ping(@RequestHeader(name = "Authorization") String tok, @PathVariable UUID routeUUID, @RequestBody PingData pingData) {
-        this.log.info("POST /service/route/{routeUUID}/ping");
+        this.log.info("POST /service/route/" + routeUUID + "/ping");
         if (tok.startsWith("Bearer ")) {
             tok = tok.substring("Bearer ".length());
         }

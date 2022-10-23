@@ -7,7 +7,11 @@ RUN npm ci --silent --production
 COPY /csh-pings-frontend/src/ ./src/
 COPY /csh-pings-frontend/public/ ./public/
 COPY /csh-pings-frontend/tsconfig.json ./
-RUN npm run build 
+COPY .git/ .git/
+COPY ./csh-pings-frontend/git-parse.sh git-parse.sh
+RUN apk add git
+RUN sh ./git-parse.sh
+RUN npm run build
 
 FROM maven:3.8.6-openjdk-18 as maven
 COPY csh-pings-backend/src/ ./src/

@@ -27,7 +27,8 @@ export type ApplicationInfo = {
     name: string,
     description: string,
     webURL: string,
-    published: boolean
+    published: boolean,
+    maintainers: string[]
 }
 
 export type ServiceInfo = {
@@ -78,4 +79,9 @@ export interface ExternalTokenInfo {
 
 export interface MaintainerInfo {
     username: string
+}
+
+export interface ErrorInfo {
+    message: string,
+    stackTrace: string
 }

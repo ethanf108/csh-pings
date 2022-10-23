@@ -1,9 +1,8 @@
 import { faCheck, faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import { Button, Card, CardBody, CardHeader, Container } from "reactstrap";
-import { getJSON, patch } from "../../API/API";
+import { getJSON, patch, toastError } from "../../API/API";
 import { ApplicationInfo, MaintainerInfo, UserInfo } from "../../API/Types";
 import UserSearch from "../../components/UserSearch";
 
@@ -20,9 +19,7 @@ const MaintainerEdit: React.FC<MaintainerEditProps> = props => {
     const loadMaintainers = () => {
         getJSON<MaintainerInfo[]>(`/api/application/${application.uuid}/maintainer`)
             .then(setMaintainers)
-            .catch(e => toast.error("Unable to fetch Maintainers " + e, {
-                theme: "colored"
-            }));
+            .catch(toastError("Unable to fetch Maintainers"));
     }
 
     useEffect(loadMaintainers, [application]);
@@ -47,9 +44,7 @@ const MaintainerEdit: React.FC<MaintainerEditProps> = props => {
             username: u.username
         })))
             .then(loadMaintainers)
-            .catch(e => toast.error("Unable to edit Maintainers " + e, {
-                theme: "colored"
-            }));
+            .catch(toastError("Unable to edit Maintainers"));
     }
 
     return (

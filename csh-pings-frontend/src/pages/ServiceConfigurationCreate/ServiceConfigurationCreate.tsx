@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Button, Card, CardBody, CardHeader, Container, Form, FormText, Input } from "reactstrap";
-import { getJSON, post } from "../../API/API";
+import { getJSON, post, toastError } from "../../API/API";
 import { ServiceConfigurationProperty, ServiceInfo } from "../../API/Types";
 
 const ServiceConfigurationCreate: React.FC = () => {
@@ -19,10 +19,11 @@ const ServiceConfigurationCreate: React.FC = () => {
     });
 
     const setService = (value: string) => {
-        setFormData({
-            ...formData,
-            service: value
-        })
+        setFormData(old => ({
+            ...old,
+            service: value,
+            description: "",
+        }))
     }
 
     const setProperty = (id: string, value: string) => {
@@ -45,9 +46,7 @@ const ServiceConfigurationCreate: React.FC = () => {
     useEffect(() => {
         getJSON<ServiceInfo[]>("/api/service/")
             .then(data => setServices(data.filter(s => s.id !== "web")))
-            .catch(e => toast.error("Unable to fetch Services " + e, {
-                theme: "colored"
-            }));
+            .catch(toastError("Unable to fetch Services"));
     }, []);
 
     useEffect(() => {
@@ -64,9 +63,7 @@ const ServiceConfigurationCreate: React.FC = () => {
                     }))
                 }))
             })
-            .catch(e => toast.error("Unable to fetch Service Properties " + e, {
-                theme: "colored"
-            }));
+            .catch(toastError("Unable to fetch Service Properties"));
     }, [formData.service]);
 
     const canSubmit = () => {
@@ -97,9 +94,7 @@ const ServiceConfigurationCreate: React.FC = () => {
                 theme: "colored"
             }))
             .then(() => window.location.assign("/service-configuration"))
-            .catch(e => toast.error("Unable to create Service Configuration " + JSON.stringify(e), {
-                theme: "colored"
-            }));
+            .catch(toastError("Error creating Service Configuration"));
     }
 
     return (
@@ -129,7 +124,9 @@ const ServiceConfigurationCreate: React.FC = () => {
                                 description: e.target.value
                             })}
                             placeholder="Description"
+                            value={formData.description}
                         />
+                        <FormText>Short name for this configuration</FormText>
                     </CardBody>
                 </Card>
                 {
@@ -158,6 +155,7 @@ const ServiceConfigurationCreate: React.FC = () => {
                                             type={prop.type}
                                             onChange={e => setProperty(prop.id, e.target.value)}
                                             placeholder={prop.name}
+                                            value={prop.value}
                                         />
                                 }
                                 <FormText dangerouslySetInnerHTML={{__html: prop.description}} />

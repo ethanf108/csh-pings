@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Badge, Button, Card, CardBody, CardHeader, Container, Input } from "reactstrap";
-import { apiDelete, getJSON, post } from "../../API/API";
+import { apiDelete, getJSON, post, toastError } from "../../API/API";
 import { ApplicationInfo, RouteInfo, ServiceConfigurationInfo, UserRegistrationInfo } from "../../API/Types";
 
 const ApplicationConfiguration: React.FC = () => {
@@ -16,9 +16,7 @@ const ApplicationConfiguration: React.FC = () => {
     useEffect(() => {
         getJSON<ServiceConfigurationInfo[]>("/api/service-configuration/")
             .then(e => setServiceConfigurations(e.filter(sc => sc.verified)))
-            .catch(e => toast.error("Unable to fetch Service Configurations " + e, {
-                theme: "colored"
-            }));
+            .catch(toastError("Unable to fetch Service Configurations"));
     }, []);
 
     const getServiceConfiguration = (ureg: UserRegistrationInfo): ServiceConfigurationInfo | null => {
@@ -34,7 +32,8 @@ const ApplicationConfiguration: React.FC = () => {
 
     useEffect(() => {
         getJSON<ApplicationInfo>(`/api/application/${uuid}`)
-            .then(setApplication);
+            .then(setApplication)
+            .catch(toastError("Unable to fetch Application"));
     }, [uuid]);
 
     type RouteWithUserRegistrations = {
@@ -87,9 +86,7 @@ const ApplicationConfiguration: React.FC = () => {
             .then(() => toast.success("Deleted Registration!", {
                 theme: "colored"
             }))
-            .catch(e => toast.error("Unable to delete Registration " + e, {
-                theme: "colored"
-            }))
+            .catch(toastError("Unable to delete Registration"))
             .finally(updateRoutesAndRegistrations)
     };
 
@@ -111,9 +108,7 @@ const ApplicationConfiguration: React.FC = () => {
                     theme: "colored"
                 })
             })
-            .catch(e => toast.error("Error while configuring application " + e, {
-                theme: "colored"
-            }))
+            .catch(toastError("Unable to register"))
             .finally(updateRoutesAndRegistrations)
     }
 
