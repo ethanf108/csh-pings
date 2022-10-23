@@ -39,6 +39,7 @@ const ServiceConfigurations: React.FC = () => {
                 {
                     serviceConfigurations
                         .filter(n => n.service.name !== "web")
+                        .sort((a,b)=>a.description.localeCompare(b.description))
                         .map((config, index) =>
                             config.service.id !== "web" &&
                             <Col key={index} className="py-3" xs={12} sm={12} md={6} lg={4} xl={4} xxl={3}>

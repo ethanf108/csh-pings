@@ -67,7 +67,9 @@ const UserSearch: React.FC<{
             />
             <ul className="dropdown-menu" role="menu" hidden={!inputText || inputText.length < 2 || results.length === 0}>
                 {
-                    results.map((user, index) =>
+                    results
+                    .sort((a,b)=>a.username.localeCompare(b.username))
+                    .map((user, index) =>
                         <Button key={index} size="sm" className="d-block bg-transparent shadow-none y-0" onClick={() => addUser(user)}>
                             {user.fullName} ({user.username})
                         </Button>

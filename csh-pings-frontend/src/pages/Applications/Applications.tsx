@@ -66,6 +66,7 @@ const Applications: React.FC = () => {
                 {
                     applications.elements
                         .filter(a => a.published || userSettings.superuserMode || a.maintainers.includes(user?.username || ""))
+                        .sort((a,b)=>a.name.localeCompare(b.name))
                         .map((app, index) =>
                             <Col key={index} className="my-3" xs={12} sm={12} md={6} lg={4} xl={4} xxl={3}>
                                 <Card className="bg-secondary">
