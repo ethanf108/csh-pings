@@ -184,7 +184,7 @@ const ServiceConfigurationCreate: React.FC = () => {
                     )
                 }
                 <Container className="d-flex px-0">
-                    <Button disabled={!canSubmit()} onClick={submit} size="sm" color="danger" className="flex-grow-1">Submit</Button>
+                    <Button disabled={!canSubmit()} onClick={submit} size="sm" color="success" className="flex-grow-1">Submit</Button>
                 </Container>
             </Form>
         </Container>
