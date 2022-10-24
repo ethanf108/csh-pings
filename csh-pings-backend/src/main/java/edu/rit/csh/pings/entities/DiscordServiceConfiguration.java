@@ -19,11 +19,20 @@ import java.util.Optional;
 public final class DiscordServiceConfiguration extends ServiceConfiguration implements ServiceMarker {
 
     @Column
-    @ConfigurableProperty(id = "discord_username", name = "Discord Username", type = ConfigurableProperty.Type.TEXT)
+    @ConfigurableProperty(
+            id = "discord_username",
+            name = "Discord Username",
+            type = ConfigurableProperty.Type.TEXT,
+            validationRegex = ".{2,}")
     private String discordUsername;
 
     @Column
-    @ConfigurableProperty(id = "discord_discriminator", name = "Discord Discriminator", description = "The 4 numbers to uniquely identify users with the same username" ,type = ConfigurableProperty.Type.TEXT)
+    @ConfigurableProperty(
+            id = "discord_discriminator",
+            name = "Discord Discriminator",
+            description = "The 4 numbers to uniquely identify users with the same username",
+            type = ConfigurableProperty.Type.TEXT,
+            validationRegex = "\\d{4}")
     private String discordDiscriminator;
 
     @Override

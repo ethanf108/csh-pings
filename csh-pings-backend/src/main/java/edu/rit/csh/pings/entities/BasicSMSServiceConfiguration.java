@@ -19,7 +19,12 @@ import java.util.Map;
 public final class BasicSMSServiceConfiguration extends ServiceConfiguration implements ServiceMarker {
 
     @Column
-    @ConfigurableProperty(id = "phone-num", name = "Phone Number", description = "Phone Number", type = ConfigurableProperty.Type.TEL)
+    @ConfigurableProperty(
+            id = "phone-num",
+            name = "Phone Number",
+            description = "Phone Number",
+            type = ConfigurableProperty.Type.TEL,
+            validationRegex = "\\s*\\(?\\s*(\\d\\s*){3}\\)?\\s*-?\\s*(\\d\\s*){3}\\s*-?\\s*(\\d\\s*){4}\\s*")
     private String phoneNum;
 
     @Column
@@ -40,7 +45,7 @@ public final class BasicSMSServiceConfiguration extends ServiceConfiguration imp
 
     @Override
     public void create(Map<String, String> properties) {
-        final String phoneNum = properties.get("phone-num");
+        final String phoneNum = properties.get("phone-num").replaceAll("\\s|-|\\(|\\)", "");
         if (!phoneNum.matches("[0-9]{10}")) {
             throw new IllegalArgumentException("Invalid Phone Number");
         }

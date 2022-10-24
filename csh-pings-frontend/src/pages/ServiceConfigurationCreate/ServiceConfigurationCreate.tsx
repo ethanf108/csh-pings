@@ -70,7 +70,7 @@ const ServiceConfigurationCreate: React.FC = () => {
         if (!formData.service || !formData.properties) {
             return false;
         }
-        return formData.properties.filter(prop => !prop.value).length === 0;
+        return formData.properties.filter(p=>!propValid(p)).length === 0;
     }
 
     const submit = () => {
@@ -95,6 +95,23 @@ const ServiceConfigurationCreate: React.FC = () => {
             }))
             .then(() => window.location.assign("/service-configuration"))
             .catch(toastError("Error creating Service Configuration"));
+    }
+
+    const propValid = (prop: (ServiceConfigurationProperty & { value: string })) => {
+        if (prop.type === "select") {
+            return !!prop.value;
+        }
+        let regex = prop.validationRegex;
+        if (!regex) {
+            regex = ".*";
+        }
+        if (!regex.startsWith("^")) {
+            regex = "^" + regex;
+        }
+        if (!regex.endsWith("$")) {
+            regex += "$";
+        }
+        return !!prop.value.match(regex);
     }
 
     return (
@@ -125,6 +142,7 @@ const ServiceConfigurationCreate: React.FC = () => {
                             })}
                             placeholder="Description"
                             value={formData.description}
+                            invalid={formData.description.length < 2}
                         />
                         <FormText>Short name for this configuration</FormText>
                     </CardBody>
@@ -141,6 +159,7 @@ const ServiceConfigurationCreate: React.FC = () => {
                                             type={prop.type}
                                             onChange={e => setProperty(prop.id, e.target.value)}
                                             placeholder={prop.name}
+                                            invalid={!prop.value}
                                         >
                                             <option value="" hidden>Select option ...</option>
                                             {
@@ -156,15 +175,15 @@ const ServiceConfigurationCreate: React.FC = () => {
                                             onChange={e => setProperty(prop.id, e.target.value)}
                                             placeholder={prop.name}
                                             value={prop.value}
+                                            invalid={!propValid(prop)}
                                         />
                                 }
-                                <FormText dangerouslySetInnerHTML={{__html: prop.description}} />
+                                <FormText dangerouslySetInnerHTML={{ __html: prop.description }} />
                             </CardBody>
                         </Card>
                     )
                 }
                 <Container className="d-flex px-0">
-
                     <Button disabled={!canSubmit()} onClick={submit} size="sm" color="danger" className="flex-grow-1">Submit</Button>
                 </Container>
             </Form>

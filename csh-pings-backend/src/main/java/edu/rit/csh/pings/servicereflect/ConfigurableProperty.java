@@ -42,6 +42,11 @@ public @interface ConfigurableProperty {
     Type type();
 
     /**
+     * @return Regex to be used to validate data
+     */
+    String validationRegex() default ".*";
+
+    /**
      * Only used if {@code type()} is {@code ENUM}
      *
      * @return possible values

@@ -23,7 +23,8 @@ public final class TelegramServiceConfiguration extends ServiceConfiguration imp
             id = "telegram_username",
             name = "Telegram Username",
             description = "Valid Telegram Username. Please <a href=\"https://t.me/cshpingsbot\" target=\"_blank\">add the Pings bot</a> on Telegram before creating",
-            type = ConfigurableProperty.Type.TEXT)
+            type = ConfigurableProperty.Type.TEXT,
+            validationRegex = "[a-zA-Z0-9_]{5,}")
     private String telegramUsername;
 
     @Column

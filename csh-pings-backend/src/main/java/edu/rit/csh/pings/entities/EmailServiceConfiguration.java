@@ -18,7 +18,12 @@ import java.util.Map;
 public final class EmailServiceConfiguration extends ServiceConfiguration implements ServiceMarker {
 
     @Column
-    @ConfigurableProperty(id = "email", name = "Email Address", description = "Email Address", type = ConfigurableProperty.Type.EMAIL)
+    @ConfigurableProperty(
+            id = "email",
+            name = "Email Address",
+            description = "Email Address",
+            type = ConfigurableProperty.Type.EMAIL,
+            validationRegex = ".+@.+")
     private String toEmail;
 
     @Override

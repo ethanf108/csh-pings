@@ -57,6 +57,7 @@ export type ServiceConfigurationProperty = {
     name: string,
     description: string,
     type: InputType,
+    validationRegex: string,
     enumValues: string[]
 }
 

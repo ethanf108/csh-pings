@@ -11,7 +11,6 @@ export const GitFooter: React.FC = () => {
                 <FontAwesomeIcon className="px-1" icon={faCodeBranch} />
                 <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
             </a>
-
         </footer>
     );
 }

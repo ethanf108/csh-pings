@@ -18,5 +18,6 @@ public class ServiceConfigurationProperty {
     private String description;
     private String type;
     private List<String> enumValues;
+    private String validationRegex;
 
 }

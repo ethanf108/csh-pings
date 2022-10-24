@@ -63,6 +63,7 @@ public class ServiceController {
                 prop.setDescription(cprop.description());
                 prop.setType(cprop.type().getHtmlInputType());
                 prop.setEnumValues(Arrays.asList(cprop.enumValues()));
+                prop.setValidationRegex(cprop.validationRegex());
                 props.add(prop);
             }
         }
