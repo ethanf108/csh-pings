@@ -10,9 +10,5 @@ const root = ReactDOM.createRoot(
 );
 
 root.render(
-  <OidcProvider configuration={configuration}>
-    <OidcSecure>
       <App />
-    </OidcSecure>
-  </OidcProvider>
 );
