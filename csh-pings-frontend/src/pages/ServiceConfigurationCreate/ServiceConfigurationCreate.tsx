@@ -67,10 +67,10 @@ const ServiceConfigurationCreate: React.FC = () => {
     }, [formData.service]);
 
     const canSubmit = () => {
-        if (!formData.service || !formData.properties) {
+        if (!formData.service || !formData.properties || !formData.description) {
             return false;
         }
-        return formData.properties.filter(p=>!propValid(p)).length === 0;
+        return formData.properties.filter(p=>!propValid(p)).length === 0 && formData.description.length > 1;
     }
 
     const submit = () => {
