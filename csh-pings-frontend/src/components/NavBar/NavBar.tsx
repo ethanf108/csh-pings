@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
+  Badge,
   Collapse,
+  Container,
   Nav,
   Navbar,
   NavbarBrand,
@@ -10,6 +12,9 @@ import {
 import { NavLink } from "react-router-dom";
 import Profile from "./Profile";
 import WebNotifications from "./WebNotifications";
+import { UserSettingsContext } from "../../pages/App/App";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faWarning } from "@fortawesome/free-solid-svg-icons";
 
 const NavBar: React.FunctionComponent = () => {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
@@ -17,6 +22,8 @@ const NavBar: React.FunctionComponent = () => {
   const toggle = () => {
     setIsOpen(!isOpen);
   };
+
+  const [userSettings] = useContext(UserSettingsContext);
 
   return (
     <Navbar color="primary" dark expand="lg" fixed="top">
@@ -32,6 +39,15 @@ const NavBar: React.FunctionComponent = () => {
           </NavItem>
         </Nav>
         <Nav navbar className="ml-auto">
+          {
+            userSettings.superuserMode &&
+            <Container className="nav text-white">
+              <Badge color="danger" className="d-flex">
+                <FontAwesomeIcon size="2x" icon={faWarning} />
+                <Container className="lead"><strong>Superuser Mode</strong></Container>
+              </Badge>
+            </Container>
+          }
           <WebNotifications />
           <Profile />
         </Nav>
