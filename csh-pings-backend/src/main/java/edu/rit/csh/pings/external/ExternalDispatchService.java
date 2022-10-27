@@ -19,6 +19,7 @@ public class ExternalDispatchService {
     private final TelegramService telegramService;
     private final BasicSMSService basicSMSService;
     private final DiscordService discordService;
+    private final CSHSlackService cshSlackService;
 
     @SuppressWarnings("unchecked") //lmao
     public <T extends ServiceConfiguration> ExternalService<T> getExternalService(T config) {
@@ -32,6 +33,8 @@ public class ExternalDispatchService {
             return (ExternalService<T>) this.basicSMSService;
         } else if (config instanceof DiscordServiceConfiguration) {
             return (ExternalService<T>) this.discordService;
+        } else if (config instanceof CSHSlackServiceConfiguration) {
+            return (ExternalService<T>) this.cshSlackService;
         } else {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Invalid Service Configuration");
         }

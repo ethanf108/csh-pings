@@ -66,6 +66,11 @@
             <artifactId>JDA</artifactId>
             <version>5.0.0-alpha.21</version>
         </dependency>
+        <dependency>
+            <groupId>com.slack.api</groupId>
+            <artifactId>bolt-jetty</artifactId>
+            <version>1.26.1</version>
+        </dependency>
     </dependencies>
 
 
