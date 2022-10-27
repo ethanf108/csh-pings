@@ -44,8 +44,10 @@ const ServiceConfigurationCreate: React.FC = () => {
     const [services, setServices] = useState<ServiceInfo[]>([]);
 
     useEffect(() => {
-        getJSON<ServiceInfo[]>("/api/service/")
-            .then(data => setServices(data.filter(s => s.id !== "web")))
+        getJSON<ServiceInfo[]>("/api/service/", {
+            onlyCreatable: true
+        })
+            .then(setServices)
             .catch(toastError("Unable to fetch Services"));
     }, []);
 

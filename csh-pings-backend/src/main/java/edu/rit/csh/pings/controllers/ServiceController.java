@@ -1,23 +1,24 @@
 package edu.rit.csh.pings.controllers;
 
+import edu.rit.csh.pings.auth.CSHUser;
 import edu.rit.csh.pings.entities.ServiceConfiguration;
 import edu.rit.csh.pings.exchange.serviceconfiguration.ServiceConfigurationProperty;
 import edu.rit.csh.pings.exchange.serviceconfiguration.ServiceInfo;
+import edu.rit.csh.pings.managers.ServiceConfigurationManager;
 import edu.rit.csh.pings.managers.ServiceManager;
 import edu.rit.csh.pings.servicereflect.ConfigurableProperty;
 import edu.rit.csh.pings.servicereflect.ServiceDescription;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,10 +28,10 @@ public class ServiceController {
     private final Log log = LogFactory.getLog("pings.service_controller");
 
     private final ServiceManager serviceManager;
+    private final ServiceConfigurationManager serviceConfigurationManager;
 
-    static ServiceInfo fromService(Class<? extends ServiceConfiguration> service) {
+    static ServiceInfo fromService(ServiceDescription desc) {
         final ServiceInfo ret = new ServiceInfo();
-        final ServiceDescription desc = service.getAnnotation(ServiceDescription.class);
         ret.setId(desc.id());
         ret.setName(desc.name());
         ret.setDescription(desc.description());
@@ -38,15 +39,22 @@ public class ServiceController {
     }
 
     @GetMapping("/api/service/")
-    private List<ServiceInfo> getServices() {
-        this.log.info("GET /api/service");
-        return this.serviceManager.getServices().stream().map(ServiceController::fromService).toList();
+    private List<ServiceInfo> getServices(
+            @AuthenticationPrincipal CSHUser user,
+            @RequestParam(defaultValue = "false") boolean onlyCreatable) {
+        this.log.info("GET /api/service/?onlyCreatable=" + onlyCreatable);
+        Stream<ServiceDescription> stream = this.serviceManager.getServices().stream().map(ServiceManager::getInfo);
+        if (onlyCreatable) {
+            stream = stream.filter(n -> n.allowMultiple() ||
+                    !this.serviceConfigurationManager.checkDuplicateConfigurations(user.getUsername(), n));
+        }
+        return stream.map(ServiceController::fromService).toList();
     }
 
     @GetMapping("/api/service/{id}/")
     private ServiceInfo getService(@PathVariable String id) {
         this.log.info("GET /api/service/" + id);
-        return fromService(this.serviceManager.getServiceById(id).orElseThrow());
+        return fromService(this.serviceManager.getServiceById(id).map(ServiceManager::getInfo).orElseThrow());
     }
 
     @GetMapping("/api/service/{id}/properties")

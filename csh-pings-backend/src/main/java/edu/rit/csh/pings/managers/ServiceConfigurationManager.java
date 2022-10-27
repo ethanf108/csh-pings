@@ -34,6 +34,15 @@ public class ServiceConfigurationManager {
         }
     }
 
+    public boolean checkDuplicateConfigurations(String username, ServiceDescription desc) {
+        return desc.allowMultiple() ||
+                this.serviceConfigurationRepo
+                        .findAllByUsernameIgnoreCase(username)
+                        .stream()
+                        .map(ServiceConfiguration::getInfo)
+                        .anyMatch(d -> d.id().equalsIgnoreCase(desc.id()));
+    }
+
     public WebNotificationConfiguration ensureWebNotificationConfigurationPresent(String username) {
         final List<ServiceConfiguration> configs = this.getByUsername(username);
         for (ServiceConfiguration config : configs) {

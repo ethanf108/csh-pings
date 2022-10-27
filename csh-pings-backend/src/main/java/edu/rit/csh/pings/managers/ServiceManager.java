@@ -14,6 +14,10 @@ public class ServiceManager {
 
     private final Map<String, Class<? extends ServiceConfiguration>> serviceCache = new HashMap<>();
 
+    public static ServiceDescription getInfo(Class<? extends ServiceConfiguration> clazz) {
+        return clazz.getAnnotation(ServiceDescription.class);
+    }
+
     private void populateServiceConfigurationCache() {
         if (!this.serviceCache.isEmpty()) {
             return;

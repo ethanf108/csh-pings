@@ -75,7 +75,7 @@ public class ServiceConfigurationController {
     public ServiceConfigurationInfo fromServiceConfiguration(ServiceConfiguration config) {
         ServiceConfigurationInfo ret = new ServiceConfigurationInfo();
         BeanUtils.copyProperties(config, ret);
-        ret.setService(ServiceController.fromService(config.getClass()));
+        ret.setService(ServiceController.fromService(config.getInfo()));
         List<ConfigurablePropertyInfo> props = new ArrayList<>();
         for (Field field : config.getClass().getDeclaredFields()) {
             if (!field.isAnnotationPresent(ConfigurableProperty.class)) {
