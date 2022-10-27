@@ -45,8 +45,13 @@ public class ServiceController {
         this.log.info("GET /api/service/?onlyCreatable=" + onlyCreatable);
         Stream<ServiceDescription> stream = this.serviceManager.getServices().stream().map(ServiceManager::getInfo);
         if (onlyCreatable) {
-            stream = stream.filter(n -> n.allowMultiple() ||
-                    !this.serviceConfigurationManager.checkDuplicateConfigurations(user.getUsername(), n));
+            final List<ServiceDescription> configurations = this.serviceConfigurationManager
+                    .getByUsername(user.getUsername())
+                    .stream()
+                    .map(ServiceConfiguration::getInfo)
+                    .distinct()
+                    .toList();
+            stream = stream.filter(n -> n.allowMultiple() || !configurations.contains(n));
         }
         return stream.map(ServiceController::fromService).toList();
     }
