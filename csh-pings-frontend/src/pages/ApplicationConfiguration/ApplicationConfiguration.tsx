@@ -1,4 +1,4 @@
-import { faPlus, faX } from "@fortawesome/free-solid-svg-icons";
+import { faArrowUpRightFromSquare, faPlus, faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -121,10 +121,19 @@ const ApplicationConfiguration: React.FC = () => {
                     {!application.published && <Badge className="mx-2 text-white" color="warning">Not Published</Badge>}
                 </h3>
                 <p className="text-muted">{application.description}</p>
+                {
+                    application.webURL &&
+                    <a href={application.webURL} target="_blank">
+                        {application.webURL}
+                        <FontAwesomeIcon className="pl-1" icon={faArrowUpRightFromSquare} />
+                    </a>
+                }
             </Container>
             {
                 routes.length === 0 &&
-                <p>No routes exist for this application :(</p>
+                <Container className="d-flex justify-content-center">
+                    <h3>No routes exist for this application :(</h3>
+                </Container>
             }
             {
                 routes

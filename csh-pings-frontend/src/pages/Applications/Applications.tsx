@@ -69,7 +69,7 @@ const Applications: React.FC = () => {
                         .sort((a,b)=>a.name.localeCompare(b.name))
                         .map((app, index) =>
                             <Col key={index} className="my-3" xs={12} sm={12} md={6} lg={4} xl={4} xxl={3}>
-                                <Card className="bg-secondary">
+                                <Card className="bg-secondary h-100">
                                     <CardHeader>
                                         {app.name}
                                         {
